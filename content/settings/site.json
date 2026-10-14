@@ -1,0 +1,23 @@
+{
+  "phone": "07714 622333",
+  "email": "",
+  "address": "18 High Street, Skegness, PE25 3NW",
+  "facebookUrl": "",
+  "googleReviewUrl": "",
+  "topBar": [
+    "Takeaway hatch: drinks and food, £3.50 each",
+    "Games night every Wednesday, 17:00 – 19:00"
+  ],
+  "entry": { "weekday": "£5", "saturday": "£7", "sunday": "£6" },
+  "rules": { "maxGuests": 15, "maxChildren": 6, "minAge": 5, "rescheduling": "" },
+  "parking": "",
+  "access": "",
+  "sponsorship": {
+    "billing": "",
+    "tiers": [
+      { "name": "Paw Pal", "price": "£5", "blurb": "A little help goes a long way." },
+      { "name": "Best Friend", "price": "£10", "blurb": "Helps with everyday care and treats." },
+      { "name": "Super Sponsor", "price": "£20", "blurb": "Makes a real difference." }
+    ]
+  }
+}

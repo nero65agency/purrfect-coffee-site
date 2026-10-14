@@ -1,0 +1,61 @@
+{
+  "days": [
+    {
+      "day": "Monday",
+      "closed": false,
+      "open": "09:00",
+      "close": "18:00",
+      "lastBooking": "17:00",
+      "special": "Crafting 9:00 – 11:30 (£4) and 15:00 – 18:00. Coffee and cuddles 12:00 – 15:00."
+    },
+    {
+      "day": "Tuesday",
+      "closed": false,
+      "open": "09:00",
+      "close": "18:00",
+      "lastBooking": "17:00",
+      "special": "Coffee £3 and cake £3."
+    },
+    {
+      "day": "Wednesday",
+      "closed": false,
+      "open": "09:00",
+      "close": "19:00",
+      "lastBooking": "17:00",
+      "special": "Games night 17:00 – 19:00: bingo, Sticky Thirteen, higher or lower."
+    },
+    {
+      "day": "Thursday",
+      "closed": false,
+      "open": "09:00",
+      "close": "17:00",
+      "lastBooking": "16:00",
+      "special": "Buy a cake, get a coffee free."
+    },
+    {
+      "day": "Friday",
+      "closed": false,
+      "open": "09:00",
+      "close": "19:00",
+      "lastBooking": "18:00",
+      "special": "Crafting 9:00 – 11:30 (£4) and 15:00 – 18:00. Coffee and cuddles 12:00 – 15:00."
+    },
+    {
+      "day": "Saturday",
+      "closed": false,
+      "open": "09:00",
+      "close": "19:00",
+      "lastBooking": "18:00",
+      "special": "Little ones (under 7s) 9:00 – 12:30 with tuff trays and grooming. Over 7s 13:00 – 16:00. Chill and cuddles 16:00 – 19:00."
+    },
+    {
+      "day": "Sunday",
+      "closed": false,
+      "open": "10:00",
+      "close": "16:30",
+      "lastBooking": "15:30",
+      "special": "Bookings only. Coffee £3 and cake £3."
+    }
+  ],
+  "note": ""
+}

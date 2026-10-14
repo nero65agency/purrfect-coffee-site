@@ -1,0 +1,9 @@
+{
+  "title": "Games night",
+  "when": "Every Wednesday, 17:00 – 19:00",
+  "description": "£5 entry for up to 2 hours. Bingo, Sticky Thirteen, higher or lower and more. Games cost extra and include a free drink.",
+  "image": "/uploads/events/games.jpg",
+  "bookable": true,
+  "hidden": false,
+  "order": 1
+}

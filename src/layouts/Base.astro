@@ -1,33 +1,45 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import TinaIsland from '@tinacms/astro/TinaIsland.astro';
-import { getConfig } from '../lib/data';
-import { islands } from '../lib/islands';
+import "../styles/site.css";
+import TopBar from "../components/TopBar.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import BookingDialog from "../components/BookingDialog.astro";
+import { settings, hours } from "../lib/content";
 
 interface Props {
-	title: string;
-	description: string;
-	image?: string;
+  title?: string;
+  description?: string;
 }
+const {
+  title = "The Purr-fect Coffee Shop | Cat café in Skegness",
+  description = "Skegness's cat café on the High Street. Spend an hour with our seven resident cats, with coffee, cake and light lunches. From £5 per person.",
+} = Astro.props;
 
-const { title, description, image } = Astro.props;
-const config = (await getConfig()).data?.config ?? null;
+// Read by the page script for the live open/closed status, week table and booking screen.
+const siteData = { days: hours.days ?? [], entry: settings.entry ?? {}, rules: settings.rules ?? {} };
 ---
-
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} image={image} />
-	</head>
-	<body>
-		<TinaIsland name="global" wrapper={islands.global.wrapper}>
-			<Header config={config} />
-		</TinaIsland>
-		<slot />
-		<TinaIsland name="global-footer" wrapper={islands['global-footer'].wrapper}>
-			<Footer config={config} />
-		</TinaIsland>
-	</body>
+<html lang="en-GB" data-theme="light" style="color-scheme:only light;background:#FFFFFF">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="only light">
+<!-- Remove this line at launch so Google can find the site -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="icon" href="/uploads/site/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<TopBar />
+<Header />
+<main id="top"><slot /></main>
+<Footer />
+<BookingDialog />
+<script type="application/json" id="site-data" set:html={JSON.stringify(siteData)}></script>
+<script>import "../scripts/site.js";</script>
+</body>
 </html>

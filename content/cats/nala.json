@@ -1,0 +1,9 @@
+{
+  "name": "Nala",
+  "pronoun": "She",
+  "bio": "Loves cuddles, and walking to the café on her lead.",
+  "photo": "/uploads/cats/nala.jpg",
+  "photoAlt": "Nala, a tabby cat",
+  "photoPosition": "40% 40%",
+  "order": 3
+}

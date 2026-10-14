@@ -1,181 +1,37 @@
 ---
-import client from "../../tina/__generated__/client";
-
-// Fetch collections from TinaCMS with safety fallbacks
-let cats = [];
-let menuItems = [];
-let hours = [];
-
-try {
-  const catsResponse = await client.queries.catsConnection();
-  const menuResponse = await client.queries.menuConnection();
-  const hoursResponse = await client.queries.hoursConnection();
-
-  cats = catsResponse.data.catsConnection.edges?.map((edge) => edge?.node) || [];
-  menuItems = menuResponse.data.menuConnection.edges?.map((edge) => edge?.node) || [];
-  hours = hoursResponse.data.hoursConnection.edges?.map((edge) => edge?.node) || [];
-} catch (e) {
-  console.log("Loading hardcoded fallbacks...");
-}
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Spaces from "../components/Spaces.astro";
+import About from "../components/About.astro";
+import Week from "../components/Week.astro";
+import PlanCards from "../components/PlanCards.astro";
+import Cats from "../components/Cats.astro";
+import Sponsor from "../components/Sponsor.astro";
+import Menu from "../components/Menu.astro";
+import Band from "../components/Band.astro";
+import Events from "../components/Events.astro";
+import Gallery from "../components/Gallery.astro";
+import Reviews from "../components/Reviews.astro";
+import Faq from "../components/Faq.astro";
+import Visit from "../components/Visit.astro";
+import Cta from "../components/Cta.astro";
+import Contact from "../components/Contact.astro";
 ---
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Purr-fect Coffee Shop</title>
-  </head>
-  <body style="background-color: #FAF7F2; color: #2C221E; padding: 1.5rem; max-width: 56rem; margin: 0 auto; font-family: system-ui, -apple-system, sans-serif;">
-    
-    <!-- Navigation / Header -->
-    <header style="text-align: center; padding: 2.5rem 0 1.5rem 0;">
-      <h1 style="font-size: 3rem; color: #4A2E1A; margin: 0 0 0.5rem 0; font-family: serif;">The Purr-fect Coffee</h1>
-      <p style="font-size: 1.2rem; color: #6B5242; margin: 0;">Coffee, cake and cat cuddles</p>
-    </header>
-
-    <!-- Hero / Welcome Card -->
-    <section style="background-color: #ffffff; border-radius: 1rem; padding: 2rem; border: 1px solid #E8DFC8; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center;">
-      <h2 style="font-size: 1.75rem; color: #4A2E1A; margin-top: 0; font-family: serif;">A calm, cosy space in town</h2>
-      <p style="color: #6B5242; line-height: 1.6; max-width: 38rem; margin: 0 auto 1.5rem auto;">
-        Book an hour with our friendly resident cats. Enjoy specialty teas, artisanal coffee, and homemade cakes in a relaxing atmosphere designed for both humans and felines.
-      </p>
-      <a href="#booking" style="display: inline-block; background-color: #4A2E1A; color: #ffffff; padding: 0.8rem 1.75rem; border-radius: 2rem; text-decoration: none; font-weight: bold;">Book Your Visit — £5</a>
-    </section>
-
-    <!-- Book a Visit (Cal.com Embed Section) -->
-    <section id="booking" style="background-color: #ffffff; border-radius: 1rem; padding: 2rem; border: 1px solid #E8DFC8; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-      <h2 style="font-size: 1.75rem; color: #4A2E1A; margin-top: 0; font-family: serif;">Book a Visit</h2>
-      <p style="color: #6B5242; margin-bottom: 1.5rem;">Visits last 1 hour. Entry is £5 per person (up to 15 guests per slot). Food and drinks are ordered separately on arrival.</p>
-      
-      <!-- Cal.com Inline Embed Placeholder -->
-      <div id="my-cal-inline" style="width:100%; height:500px; overflow:scroll; background-color: #FAF7F2; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px dashed #D2C4A7;">
-        <p style="color: #8C7462; text-align: center; padding: 1rem;">
-          <strong>Cal.com Widget Container</strong><br />
-          (Your live booking calendar will render here once connected)
-        </p>
-      </div>
-    </section>
-
-    <!-- Meet the Cats Section (TinaCMS Managed + Hardcoded Defaults) -->
-    <section style="margin-bottom: 2rem;">
-      <h2 style="font-size: 1.75rem; color: #4A2E1A; margin-bottom: 1.25rem; font-family: serif;">Meet the Cats</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
-        
-        {cats.length > 0 ? (
-          cats.map((cat) => (
-            <div style="background-color: #ffffff; border-radius: 1rem; border: 1px solid #E8DFC8; padding: 1rem; display: flex; gap: 1rem; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-              {cat?.photo && (
-                <img src={cat.photo} alt={cat?.name} style="width: 80px; height: 80px; object-fit: cover; border-radius: 0.75rem; flex-shrink: 0;" />
-              )}
-              <div>
-                <h3 style="font-size: 1.15rem; font-weight: bold; color: #4A2E1A; margin: 0;">{cat?.name}</h3>
-                <p style="font-size: 0.85rem; color: #6B5242; margin: 0.25rem 0 0 0;">{cat?.bio}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          /* Hardcoded HTML fallback when no Tina entries exist yet */
-          <div style="background-color: #ffffff; border-radius: 1rem; border: 1px solid #E8DFC8; padding: 1rem; display: flex; gap: 1rem; align-items: center;">
-            <div style="width: 80px; height: 80px; background-color: #E8DFC8; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: #6B5242; font-size: 0.75rem;">Photo</div>
-            <div>
-              <h3 style="font-size: 1.15rem; font-weight: bold; color: #4A2E1A; margin: 0;">Mochi</h3>
-              <p style="font-size: 0.85rem; color: #6B5242; margin: 0.25rem 0 0 0;">Loves sunny window seats and feather wand toys.</p>
-            </div>
-          </div>
-        )}
-
-      </div>
-    </section>
-
-    <!-- On the Menu Section (TinaCMS Managed + Hardcoded Defaults) -->
-    <section style="background-color: #ffffff; border-radius: 1rem; padding: 2rem; border: 1px solid #E8DFC8; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-      <h2 style="font-size: 1.75rem; color: #4A2E1A; margin-bottom: 1.25rem; font-family: serif;">On the Menu</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
-        
-        {menuItems.length > 0 ? (
-          menuItems.map((item) => (
-            <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #F0EAD6; padding-bottom: 0.5rem;">
-              <div>
-                <h4 style="font-weight: bold; margin: 0; font-size: 0.95rem;">{item?.itemName}</h4>
-                <p style="font-size: 0.75rem; color: #8C7462; margin: 0;">{item?.description}</p>
-              </div>
-              <span style="font-weight: bold; color: #4A2E1A; margin-left: auto;">{item?.price}</span>
-            </div>
-          ))
-        ) : (
-          /* Hardcoded HTML fallback menu items */
-          <>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #F0EAD6; padding-bottom: 0.5rem;">
-              <div>
-                <h4 style="font-weight: bold; margin: 0; font-size: 0.95rem;">Catpuccino</h4>
-                <p style="font-size: 0.75rem; color: #8C7462; margin: 0;">Espresso with cocoa cat stencil art</p>
-              </div>
-              <span style="font-weight: bold; color: #4A2E1A;">£3.80</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #F0EAD6; padding-bottom: 0.5rem;">
-              <div>
-                <h4 style="font-weight: bold; margin: 0; font-size: 0.95rem;">Homemade Victoria Sponge</h4>
-                <p style="font-size: 0.75rem; color: #8C7462; margin: 0;">Fresh jam and vanilla buttercream</p>
-              </div>
-              <span style="font-weight: bold; color: #4A2E1A;">£4.20</span>
-            </div>
-          </>
-        )}
-
-      </div>
-    </section>
-
-    <!-- Opening Hours & House Rules (Hardcoded HTML) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-      
-      <!-- Hours -->
-      <section style="background-color: #ffffff; border-radius: 1rem; padding: 1.5rem; border: 1px solid #E8DFC8; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-        <h3 style="font-size: 1.25rem; color: #4A2E1A; margin-top: 0; font-family: serif;">Opening Hours</h3>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          {hours.length > 0 ? (
-            hours.map((item) => (
-              <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #F0EAD6; padding: 0.4rem 0;">
-                <span style="font-weight: bold; font-size: 0.9rem;">{item?.days}</span>
-                <span style="font-size: 0.9rem;">{item?.time}</span>
-              </li>
-            ))
-          ) : (
-            <>
-              <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #F0EAD6; padding: 0.4rem 0;">
-                <span style="font-weight: bold; font-size: 0.9rem;">Mon - Fri</span>
-                <span style="font-size: 0.9rem;">10:00 - 17:00</span>
-              </li>
-              <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #F0EAD6; padding: 0.4rem 0;">
-                <span style="font-weight: bold; font-size: 0.9rem;">Saturday</span>
-                <span style="font-size: 0.9rem;">10:00 - 18:00</span>
-              </li>
-              <li style="display: flex; justify-content: space-between; padding: 0.4rem 0;">
-                <span style="font-weight: bold; font-size: 0.9rem;">Sunday</span>
-                <span style="font-size: 0.9rem;">Closed</span>
-              </li>
-            </>
-          )}
-        </ul>
-      </section>
-
-      <!-- House Rules -->
-      <section style="background-color: #ffffff; border-radius: 1rem; padding: 1.5rem; border: 1px solid #E8DFC8; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-        <h3 style="font-size: 1.25rem; color: #4A2E1A; margin-top: 0; font-family: serif;">House Rules</h3>
-        <ul style="padding-left: 1.2rem; margin: 0; color: #6B5242; font-size: 0.85rem; line-height: 1.5;">
-          <li style="margin-bottom: 0.4rem;">Let sleeping cats rest; please don't wake them.</li>
-          <li style="margin-bottom: 0.4rem;">Sanitise hands upon entering the cat lounge.</li>
-          <li style="margin-bottom: 0.4rem;">Children under 16 must be accompanied by an adult.</li>
-          <li>Please do not feed human food to the cats.</li>
-        </ul>
-      </section>
-
-    </div>
-
-    <!-- Footer -->
-    <footer style="text-align: center; color: #8C7462; font-size: 0.85rem; padding: 1.5rem 0 0.5rem 0;">
-      <p>© 2026 The Purr-fect Coffee Shop. All rights reserved.</p>
-    </footer>
-
-  </body>
-</html>
+<Base>
+  <Hero />
+  <Spaces />
+  <About />
+  <Week />
+  <PlanCards />
+  <Cats />
+  <Sponsor />
+  <Menu />
+  <Band />
+  <Events />
+  <Gallery />
+  <Reviews />
+  <Faq />
+  <Visit />
+  <Cta />
+  <Contact />
+</Base>

@@ -1,49 +1,15 @@
 ---
-import { tinaField } from "@tinacms/astro/tina-field";
-import type { CmsConfig, CmsConfigContactLink } from '../lib/data';
-import IconLink from "./IconLink.astro";
-import Starfield from './space/Starfield.astro';
-
-interface Props {
-	config?: CmsConfig | null;
-}
-
-const { config } = Astro.props;
-const seo = config?.seo ?? null;
-const contactLinks = (config?.contactLinks ?? []).filter(
-	(item): item is CmsConfigContactLink => item !== null,
-);
-const today = new Date();
+import { settings, todo, telHref } from "../lib/content";
+const facebook = settings.facebookUrl || "#";
 ---
-<footer class="border-t bg-background py-12 text-center text-sm text-muted-foreground relative overflow-hidden">
-	{config?.footerStarfield !== false && <Starfield count={50} class="text-foreground/15" />}
-	<div class="relative flex flex-col items-center gap-6">
-		{contactLinks.length > 0 && (
-			<div class="flex justify-center gap-4">
-				{contactLinks.map((link) => (
-					<IconLink
-						title={link.title}
-						link={link.link}
-						icon={link.icon}
-						data-tina-field={tinaField(link, "title")}
-					/>
-				))}
-			</div>
-		)}
-		<p>
-			&copy; {today.getFullYear()}
-			<span data-tina-field={seo ? tinaField(seo, "siteOwner") : undefined}>{seo?.siteOwner}</span>. All rights reserved.
-		</p>
-		<a
-			href="https://tina.io"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="group inline-flex items-center gap-2.5 rounded-full border bg-card/60 py-1.5 pl-1.5 pr-4 text-xs font-medium text-muted-foreground shadow-xs transition-colors duration-200 hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-		>
-			<span class="flex size-6 items-center justify-center rounded-full bg-primary transition-transform duration-300 group-hover:scale-105">
-				<img src="/llama.svg" alt="" aria-hidden="true" class="size-3.5" />
-			</span>
-			<span>Powered by <span class="font-semibold text-foreground">TinaCMS</span></span>
-		</a>
-	</div>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:12px"><img src="/uploads/site/logo.jpg" alt="The Purr-fect Coffee" style="width:110px;height:110px;border-radius:8px"><span style="font-size:15px;color:#D9C2A7">{settings.address}<br>{settings.phone}</span></div>
+      <nav aria-label="Explore"><b>Explore</b><a href="#week">Your week</a><a href="#menu">Menu</a><a href="#events">What's on</a><a href="#sponsor">Sponsor a cat</a></nav>
+      <nav aria-label="Help"><b>Help</b><a href="#faq">FAQ</a><a href="#faq">House rules</a><a href="#">Booking terms</a><a href="#">Allergen information</a></nav>
+      <nav aria-label="Legal"><b>Legal</b><a href="#">Privacy policy</a><a href="#">Cookie policy</a><a href={facebook}>Facebook</a></nav>
+    </div>
+    <div class="base"><span>© {new Date().getFullYear()} The Purr-fect Coffee Shop, Skegness</span><span style="font-family:var(--serif);font-style:italic;font-size:24px;color:#F4E4D2">Relax, unwind, connect, smile</span></div>
+  </div>
 </footer>

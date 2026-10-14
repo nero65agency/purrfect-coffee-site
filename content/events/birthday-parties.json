@@ -1,0 +1,9 @@
+{
+  "title": "Birthday parties",
+  "when": "Private hire",
+  "description": "Private party area with cat time, food and drink packages, themed parties and a free gift. Perfect for all ages.",
+  "image": "/uploads/events/birthday.jpg",
+  "bookable": true,
+  "hidden": false,
+  "order": 5
+}

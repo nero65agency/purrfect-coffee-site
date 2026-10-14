@@ -1,0 +1,9 @@
+{
+  "name": "Bella",
+  "pronoun": "She",
+  "bio": "",
+  "photo": "/uploads/cats/bella.jpg",
+  "photoAlt": "Bella, a tortoiseshell tabby",
+  "photoPosition": "30% 40%",
+  "order": 5
+}

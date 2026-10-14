@@ -1,0 +1,18 @@
+{
+  "itemName": "Sandwiches and wraps",
+  "category": "Sandwiches and wraps",
+  "price": "£3",
+  "description": "",
+  "order": 1,
+  "options": [
+    "Ham",
+    "Ham and pickle",
+    "Cheese",
+    "Cheese and onion",
+    "Tuna and cucumber",
+    "Tuna and sweetcorn",
+    "Corned beef",
+    "Egg mayonnaise",
+    "Pickle"
+  ]
+}

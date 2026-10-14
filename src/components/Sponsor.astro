@@ -1,0 +1,27 @@
+---
+import { settings, todo } from "../lib/content";
+const tiers = settings.sponsorship?.tiers ?? [];
+---
+<section class="sec" id="sponsor">
+  <div class="wrap split" style="align-items:start">
+    <div class="img" style="grid-column:span 5;aspect-ratio:4/5"><img src="/uploads/site/cuddle.jpg" alt="Two of our cats curled up asleep together"></div>
+    <div class="txt" style="grid-column:7/span 6">
+      <div class="bar"></div>
+      <h2 class="h2">Our cats come first</h2>
+      <div class="care">
+        <div><strong>Their choice, always</strong><p>Cats come to you when they're ready. No picking up, and we never wake a sleeping cat.</p></div>
+        <div><strong>Small, calm groups</strong><p>Up to {settings.rules?.maxGuests ?? 15} guests and no more than {settings.rules?.maxChildren ?? 6} children at a time.</p></div>
+        <div><strong>Fresh air</strong><p>Air purifiers run throughout the café.</p></div>
+        <div><strong>No human food</strong><p>Our cats are well fed, so please don't share snacks or bring toys from home.</p></div>
+      </div>
+      <div class="spon">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap"><strong style="font-family:var(--serif);font-size:30px;font-weight:600">Sponsor a cat</strong><small style="color:var(--soft)">{todo(settings.sponsorship?.billing, "Monthly or one-off: to confirm")}</small></div>
+        <div class="tiers">{tiers.map((t: any, i: number) => (
+          <div class={i === tiers.length - 1 ? "tier top" : "tier"}><b>{t.price}</b><span style="font-weight:800">{t.name}</span><small>{t.blurb}</small></div>
+        ))}</div>
+        <p style="margin:0;font-size:15px;color:var(--soft)">Every sponsor gets a personalised certificate, a photo card of their cat and their name on our Cat Sponsors list.</p>
+        <a class="btn ghost" href="#contact" style="align-self:flex-start">Choose a cat to sponsor</a>
+      </div>
+    </div>
+  </div>
+</section>

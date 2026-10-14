@@ -1,0 +1,17 @@
+---
+import { settings, todo, telHref } from "../lib/content";
+const maps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(settings.address || "");
+---
+<section class="sec visit" id="visit">
+  <div class="wrap split" style="align-items:start">
+    <div class="txt" style="grid-column:span 5">
+      <div class="bar"></div><h2 class="h2">Visit us</h2>
+      <span class="status" id="status2" style="padding:6px 14px;border-radius:999px;background:var(--ok-bg);align-self:flex-start"><i></i><span></span></span>
+      <table><thead><tr><th scope="col">Day</th><th scope="col">Open</th><th scope="col">Last booking</th></tr></thead><tbody id="hours"></tbody></table>
+      <p style="margin:0;font-size:18px">{settings.address}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn book" data-book type="button">Book a visit</button><a class="btn ghost" href={maps} target="_blank" rel="noopener">Get directions</a><a class="btn ghost" href={telHref(settings.phone)}>Call</a></div>
+      <p style="margin:0;font-size:15px;color:var(--soft)"><strong style="color:var(--ink)">Parking:</strong> {todo(settings.parking, "nearest car park")} <strong style="color:var(--ink)">Access:</strong> {todo(settings.access, "step-free entrance, accessible toilet")}</p>
+    </div>
+    <div class="photo" style="grid-column:7/span 6"><img src="/uploads/site/shop.jpg" alt="The Purr-fect Coffee shopfront on Skegness High Street"><span>Map goes here in the live site</span></div>
+  </div>
+</section>

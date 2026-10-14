@@ -1,0 +1,9 @@
+{
+  "name": "Star",
+  "pronoun": "She",
+  "bio": "A little more timid than the others. Enjoys cuddles on her own terms.",
+  "photo": "/uploads/cats/star.jpg",
+  "photoAlt": "Star, a black and white cat",
+  "photoPosition": "center 40%",
+  "order": 4
+}

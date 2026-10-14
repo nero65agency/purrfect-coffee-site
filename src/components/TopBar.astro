@@ -1,0 +1,4 @@
+---
+import { settings, todo, telHref } from "../lib/content";
+---
+<div class="note"><div class="wrap topbar"><span id="tbHours">Open today</span>{settings.topBar?.map((m: string) => <span class="tbx">{m}</span>)}<a class="tbm" href={telHref(settings.phone)}>{settings.phone}</a></div></div>

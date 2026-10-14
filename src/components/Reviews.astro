@@ -1,0 +1,14 @@
+---
+import { settings, reviews } from "../lib/content";
+const facebook = settings.facebookUrl || "#";
+---
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="headrow"><div class="head"><div class="bar"></div><h2 class="h2">Kind words</h2></div>
+      <div class="scores"><span class="score"><b>5.0</b><span><span class="stars" style="color:var(--star)">★★★★★</span><br><small>Google reviews</small></span></span><span class="score"><b>100%</b><span>recommend<br><small>on Facebook</small></span></span></div></div>
+    <div class="revs">{reviews.map((rv) => (
+      <figure class="rv"><span class="stars" aria-label={`${rv.rating ?? 5} out of 5 stars`}>{"★".repeat(rv.rating ?? 5)}</span><blockquote>“{rv.quote}”</blockquote><figcaption>{rv.author}, {rv.source}</figcaption></figure>
+    ))}</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px"><button class="btn book" data-book type="button">Book your visit</button><a class="btn ghost" href={settings.googleReviewUrl || "#"}>Leave a Google review</a><a class="btn ghost" href={facebook}>Recommend us on Facebook</a></div>
+  </div>
+</section>

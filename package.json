@@ -37,7 +37,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@tinacms/cli": "^3.0.0",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tinacms": "^3.14.0",

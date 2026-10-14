@@ -1,0 +1,9 @@
+{
+  "name": "Oreo",
+  "pronoun": "He",
+  "bio": "",
+  "photo": "/uploads/cats/oreo.jpg",
+  "photoAlt": "Oreo, a white cat with black patches",
+  "photoPosition": "center 30%",
+  "order": 6
+}

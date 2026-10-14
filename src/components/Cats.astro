@@ -1,0 +1,12 @@
+---
+import { cats, todo } from "../lib/content";
+const words = ["None", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+---
+<section class="sec dark" id="cats">
+  <div class="wrap"><div class="headrow"><div class="head"><div class="bar"></div><h2 class="h2">Meet the cats</h2><p class="lede" style="margin:0">{words[cats.length] ?? cats.length} residents, {words[cats.length] ?? cats.length} personalities. Sponsor your favourite to help with their food, toys and care.</p></div>
+  <div class="arrows"><button type="button" aria-label="Previous cats" data-scroll="-1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="f" type="button" aria-label="Next cats" data-scroll="1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div></div>
+  <div class="catrow" id="catrow">{cats.map((cat) => (
+    <article class="cat"><div class="ph"><img src={cat.photo} alt={cat.photoAlt || cat.name} style={cat.photoPosition ? `object-position:${cat.photoPosition}` : undefined} loading="lazy"></div><b>{cat.name}</b><span>{todo(cat.bio, `A line about ${cat.name} from Louise.`)}</span><a href="#sponsor">Sponsor {cat.name}</a></article>
+  ))}</div>
+<div class="wrap"><div class="ctaline"><button class="btn book" data-book type="button">Book to meet them</button><span>1-hour visits, from £5 per person.</span></div></div>
+</section>

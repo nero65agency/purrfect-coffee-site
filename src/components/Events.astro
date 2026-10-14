@@ -1,0 +1,13 @@
+---
+import { events } from "../lib/content";
+---
+<section class="sec" id="events">
+  <div class="wrap">
+    <div class="head" style="margin-bottom:16px"><div class="bar"></div><h2 class="h2">What's on</h2></div>
+    <div class="ev"><ul>{events.map((e) => (
+      <li><img src={e.image} alt="" loading="lazy"><span class="i"><b>{e.title}</b><span class="w">{e.when}</span><small>{e.description}</small></span>{e.bookable && <button class="btn book sm" data-book type="button">Book</button>}</li>
+    ))}</ul>
+      <aside><img src="/uploads/events/crafts.jpg" alt="A craft session with a calico cat watching from the table"><div class="raffle"><b>Raffle for the cats</b>£1 for 3 tickets. Every number ending in 0 or 5 wins a prize. Ask at the counter.</div></aside>
+    </div>
+  </div>
+</section>
