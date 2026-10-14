@@ -1,8 +1,15 @@
 ---
-import { settings, todo, telHref } from "../lib/content";
+import { settings, todo, telHref, bookingOn } from "../lib/content";
 const payOnArrival = (settings.rules?.payment ?? "Pay on arrival") !== "Pay online when booking";
 ---
-<dialog class="book" id="book" aria-labelledby="bookTitle">
+<dialog class:list={["book", { off: !bookingOn }]} id="book" aria-labelledby={bookingOn ? "bookTitle" : "offTitle"}>
+  {!bookingOn && (
+    <div class="bkoff">
+      <h2 id="offTitle">Online booking is coming soon</h2>
+      <p>For now, just walk in, or call us to check there's room or to book ahead.</p>
+      <div class="row"><a class="btn book" href={telHref(settings.phone)}>Call {settings.phone}</a>{settings.facebookUrl && <a class="btn ghost" href={settings.facebookUrl}>Message us on Facebook</a>}</div>
+    </div>
+  )}
   <button class="xbtn" type="button" id="bookClose" aria-label="Close booking">×</button>
   <div class="bk" id="bkForm">
     <div>

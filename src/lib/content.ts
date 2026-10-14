@@ -12,9 +12,14 @@ export const settings: Json = load(import.meta.glob("/content/settings/site.json
 export const hours: Json = load(import.meta.glob("/content/hours/hours.json", { eager: true }))[0] ?? { days: [] };
 
 export const cats = load(import.meta.glob("/content/cats/*.json", { eager: true })).sort(byOrder);
-export const events = load(import.meta.glob("/content/events/*.json", { eager: true }))
-  .filter((e) => !e.hidden)
-  .sort(byOrder);
+const eventFiles = import.meta.glob("/content/events/*.json", { eager: true });
+const allEvents = Object.entries(eventFiles).map(([path, m]: [string, any]) => ({
+  ...(m && m.default ? m.default : m),
+  slug: path.split("/").pop()!.replace(/\.json$/, ""),
+}));
+export const events = allEvents.filter((e) => !e.hidden).sort(byOrder);
+// True when an event (by file name, e.g. "afternoon-tea") is switched on in What's on.
+export const eventLive = (slug: string) => events.some((e) => e.slug === slug);
 export const reviews = load(import.meta.glob("/content/reviews/*.json", { eager: true })).sort(byOrder);
 
 export const menuSections = ["Drinks", "Sandwiches and wraps", "Light bites", "Cakes and treats"];
@@ -34,5 +39,8 @@ export const todo = (value: unknown, reminder: string) =>
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 export const catWord = WORDS[cats.length] ?? String(cats.length);
 export const CatWord = catWord.charAt(0).toUpperCase() + catWord.slice(1);
+
+// Online booking stays switched off until the booking system is connected.
+export const bookingOn = settings.rules?.onlineBooking === true;
 
 export const telHref = (phone: string) => "tel:" + String(phone || "").replace(/\s+/g, "");

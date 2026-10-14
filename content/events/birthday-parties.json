@@ -4,6 +4,6 @@
   "description": "Private party area with cat time, food and drink packages, themed parties and a free gift. Perfect for all ages.",
   "image": "/uploads/events/birthday.jpg",
   "bookable": false,
-  "hidden": false,
+  "hidden": true,
   "order": 5
 }

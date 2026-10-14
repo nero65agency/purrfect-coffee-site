@@ -3,7 +3,7 @@
   "when": "Mondays and Fridays, 9:00 – 11:30 and 15:00 – 18:00",
   "description": "£4 morning session. Pottery, diamond art coasters, frames and colouring. All welcome.",
   "image": "/uploads/events/crafts.jpg",
-  "bookable": false,
-  "hidden": false,
+  "bookable": true,
+  "hidden": true,
   "order": 2
 }

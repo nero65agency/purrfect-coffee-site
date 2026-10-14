@@ -9,7 +9,7 @@ import { events, settings } from "../lib/content";
     )) : (
       <li class="soon"><span class="i"><b>New events coming soon</b><small>Games nights, crafting and more are on the way. Follow us on Facebook to hear about them first.</small></span><a class="btn ghost sm" href={settings.facebookUrl || "#"}>Follow us</a></li>
     )}</ul>
-      <aside><img src="/uploads/events/crafts.jpg" alt="A craft session with a calico cat watching from the table"><div class="raffle"><b>Raffle for the cats</b>£1 for 3 tickets. Every number ending in 0 or 5 wins a prize. Ask at the counter.</div></aside>
+      <aside><img src="/uploads/events/crafts.jpg" alt="A craft session with a calico cat watching from the table">{!settings.raffle?.hide && <div class="raffle"><b>Raffle for the cats</b>{settings.raffle?.text || "£1 for 3 tickets. Every number ending in 0 or 5 wins a prize. Ask at the counter."}</div>}</aside>
     </div>
   </div>
 </section>

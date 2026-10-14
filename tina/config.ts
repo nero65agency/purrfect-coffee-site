@@ -57,6 +57,12 @@ export default defineConfig({
               { type: "number", name: "maxGuests", label: "Most guests per hour", description: "Including children." },
               { type: "number", name: "maxChildren", label: "Most children per hour" },
               {
+                type: "boolean",
+                name: "onlineBooking",
+                label: "Online booking switched on",
+                description: "Leave off until the booking system is connected. While off, Book buttons show a call-us message.",
+              },
+              {
                 type: "string",
                 name: "payment",
                 label: "How people pay",
@@ -69,6 +75,15 @@ export default defineConfig({
                 label: "Rescheduling policy",
                 ui: { component: "textarea" },
               },
+            ],
+          },
+          {
+            type: "object",
+            name: "raffle",
+            label: "Raffle",
+            fields: [
+              { type: "boolean", name: "hide", label: "Hide the raffle box" },
+              { type: "string", name: "text", label: "Raffle details", ui: { component: "textarea" } },
             ],
           },
           { type: "string", name: "parking", label: "Parking", ui: { component: "textarea" } },

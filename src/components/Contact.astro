@@ -1,18 +1,22 @@
 ---
-import { settings, todo, telHref } from "../lib/content";
+import { settings, todo, telHref, eventLive } from "../lib/content";
+const parties = eventLive("birthday-parties");
+const tea = eventLive("afternoon-tea");
+const topics = ["questions", "feedback", parties && "parties", tea && "afternoon tea", "sponsorship"].filter(Boolean) as string[];
+const topicLine = (topics.slice(0, -1).join(", ") + " or " + topics[topics.length - 1]).replace(/^./, (c) => c.toUpperCase()) + ".";
 ---
 <section class="sec cream" id="contact">
   <div class="wrap split" style="align-items:start">
     <div class="txt" style="grid-column:span 5">
       <div class="bar"></div><h2 class="h2">Say hello</h2>
-      <p class="lede" style="margin:0">Questions, feedback, parties, afternoon tea or sponsorship.</p>
+      <p class="lede" style="margin:0">{topicLine}</p>
       <p style="margin:0;font-weight:700;line-height:1.9"><a href={telHref(settings.phone)}>{settings.phone}</a><br><a href={settings.facebookUrl || "#"}>Message us on Facebook</a><br>{settings.email ? <a href={`mailto:${settings.email}`}>{settings.email}</a> : <span style="color:var(--soft)">{todo("", "Business email")}</span>}</p>
       <form class="news" data-demo><strong style="font-family:var(--serif);font-size:22px;font-weight:600">Get cat news in your inbox</strong><span style="font-size:15px;color:var(--soft)">Events, offers and updates on the cats. No spam.</span><div class="row"><input type="email" aria-label="Email address" placeholder="Your email" required><button class="btn" type="submit">Subscribe</button></div><span class="thanks">Thanks! You're on the list.</span></form>
     </div>
     <form class="form" style="grid-column:7/span 6" data-demo>
       <label>Name<input type="text" required></label>
       <label>Email or phone<input type="text" required></label>
-      <label class="full">What's it about?<select><option>General question</option><option>Feedback on my visit</option><option>Birthday party</option><option>Cat afternoon tea</option><option>Sponsoring a cat</option></select></label>
+      <label class="full">What's it about?<select><option>General question</option><option>Feedback on my visit</option>{parties && <option>Birthday party</option>}{tea && <option>Cat afternoon tea</option>}<option>Sponsoring a cat</option></select></label>
       <fieldset class="rate"><legend>Feedback (optional)</legend><label>Food and drinks<select aria-label="Food and drinks rating"><option>Choose</option><option>5 paws</option><option>4 paws</option><option>3 paws</option><option>2 paws</option><option>1 paw</option></select></label><label>Service<select aria-label="Service rating"><option>Choose</option><option>5 paws</option><option>4 paws</option><option>3 paws</option><option>2 paws</option><option>1 paw</option></select></label><label>Cat cuddles<select aria-label="Cat cuddles rating"><option>Choose</option><option>5 paws</option><option>4 paws</option><option>3 paws</option><option>2 paws</option><option>1 paw</option></select></label><label>Overall<select aria-label="Overall rating"><option>Choose</option><option>5 paws</option><option>4 paws</option><option>3 paws</option><option>2 paws</option><option>1 paw</option></select></label></fieldset>
       <label class="full">Message<textarea required></textarea></label>
       <button class="btn" type="submit" style="justify-self:start">Send message</button>

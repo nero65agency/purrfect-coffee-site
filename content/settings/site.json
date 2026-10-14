@@ -5,19 +5,41 @@
   "facebookUrl": "",
   "googleReviewUrl": "",
   "topBar": [
-    "Takeaway hatch: drinks and food, £3.50 each",
-    "Games night every Wednesday, 17:00 – 19:00"
+    "Takeaway hatch: drinks and food, £3.50 each"
   ],
-  "entry": { "weekday": "£5", "saturday": "£7", "sunday": "£6" },
-  "rules": { "maxGuests": 15, "maxChildren": 6, "minAge": 5, "rescheduling": "" },
+  "entry": {
+    "weekday": "£5",
+    "saturday": "£7",
+    "sunday": "£6"
+  },
+  "rules": {
+    "maxGuests": 15,
+    "maxChildren": 4,
+    "minAge": 5,
+    "rescheduling": "",
+    "onlineBooking": false,
+    "payment": "Pay on arrival"
+  },
   "parking": "",
   "access": "",
   "sponsorship": {
     "billing": "",
     "tiers": [
-      { "name": "Paw Pal", "price": "£5", "blurb": "A little help goes a long way." },
-      { "name": "Best Friend", "price": "£10", "blurb": "Helps with everyday care and treats." },
-      { "name": "Super Sponsor", "price": "£20", "blurb": "Makes a real difference." }
+      {
+        "name": "Paw Pal",
+        "price": "£5",
+        "blurb": "A little help goes a long way."
+      },
+      {
+        "name": "Best Friend",
+        "price": "£10",
+        "blurb": "Helps with everyday care and treats."
+      },
+      {
+        "name": "Super Sponsor",
+        "price": "£20",
+        "blurb": "Makes a real difference."
+      }
     ]
   }
 }

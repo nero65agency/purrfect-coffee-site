@@ -1,11 +1,23 @@
+---
+import { settings, eventLive } from "../lib/content";
+const guests = settings.rules?.maxGuests ?? 15;
+const from = settings.entry?.weekday ?? "£5";
+const cards = [
+  { href: "#", book: true, img: "/uploads/site/interior2.jpg", pos: "60% 50%", title: "Book a visit", text: `1-hour visits from ${from} per person. Up to ${guests} guests.`, cta: "Choose a time" },
+  eventLive("afternoon-tea") && { href: "#events", img: "/uploads/events/aftertea.jpg", title: "Cat afternoon tea", text: "Sweet and savoury treats for two, with free entry. £30, bookings only.", cta: "Find out more" },
+  eventLive("birthday-parties") && { href: "#contact", img: "/uploads/events/birthday.jpg", title: "Birthday parties", text: "A private party area with cat time, food packages and a free gift for every party.", cta: "Plan a party" },
+  { href: "#menu", img: "/uploads/site/hatch.jpg", title: "Takeaway hatch", text: "Hot and cold drinks and takeaway food, £3.50 each. No need to come in.", cta: "See the menu" },
+  { href: "#cats", img: "/uploads/cats/nala.jpg", pos: "40% 40%", title: "Meet the cats", text: "Get to know our residents before you visit.", cta: "Say hello" },
+  { href: "#sponsor", img: "/uploads/site/cuddle.jpg", title: "Sponsor a cat", text: "Help with food, toys and care, and get a certificate and photo card.", cta: "Choose a cat" },
+].filter(Boolean).slice(0, 4) as any[];
+---
 <section class="sec">
   <div class="wrap">
     <div class="head" style="align-items:center;text-align:center;margin-bottom:40px"><div class="bar"></div><h2 class="h2">Plan your visit</h2></div>
     <div class="cards">
-      <a class="card" href="#" data-book><img src="/uploads/site/interior2.jpg" alt="" style="object-position:60% 50%"><span class="b"><strong>Book a visit</strong><span>1-hour visits from £5 per person. Up to 15 guests.</span><em>Choose a time</em></span></a>
-      <a class="card" href="#events"><img src="/uploads/events/aftertea.jpg" alt=""><span class="b"><strong>Cat afternoon tea</strong><span>Sweet and savoury treats for two, with free entry. £30, bookings only.</span><em>Find out more</em></span></a>
-      <a class="card" href="#contact"><img src="/uploads/events/birthday.jpg" alt=""><span class="b"><strong>Birthday parties</strong><span>A private party area with cat time, food packages and a free gift for every party.</span><em>Plan a party</em></span></a>
-      <a class="card" href="#menu"><img src="/uploads/site/hatch.jpg" alt=""><span class="b"><strong>Takeaway hatch</strong><span>Hot and cold drinks and takeaway food, £3.50 each. No need to come in.</span><em>See the menu</em></span></a>
+      {cards.map((c) => (
+        <a class="card" href={c.href} data-book={c.book ? "" : undefined}><img src={c.img} alt="" style={c.pos ? `object-position:${c.pos}` : undefined} loading="lazy"><span class="b"><strong>{c.title}</strong><span>{c.text}</span><em>{c.cta}</em></span></a>
+      ))}
     </div>
   </div>
 </section>
