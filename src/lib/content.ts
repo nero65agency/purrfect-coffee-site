@@ -30,4 +30,9 @@ export const SHOW_GAPS = true;
 export const todo = (value: unknown, reminder: string) =>
   value !== undefined && value !== null && String(value).trim() !== "" ? String(value) : SHOW_GAPS ? `[${reminder}]` : "";
 
+// "seven" / "Seven", so copy keeps up when Louise adds or removes a cat.
+const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+export const catWord = WORDS[cats.length] ?? String(cats.length);
+export const CatWord = catWord.charAt(0).toUpperCase() + catWord.slice(1);
+
 export const telHref = (phone: string) => "tel:" + String(phone || "").replace(/\s+/g, "");

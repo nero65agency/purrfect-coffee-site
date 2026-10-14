@@ -1,5 +1,6 @@
 ---
 import { settings, todo, telHref } from "../lib/content";
+const payOnArrival = (settings.rules?.payment ?? "Pay on arrival") !== "Pay online when booking";
 ---
 <dialog class="book" id="book" aria-labelledby="bookTitle">
   <button class="xbtn" type="button" id="bookClose" aria-label="Close booking">×</button>
@@ -29,7 +30,7 @@ import { settings, todo, telHref } from "../lib/content";
       <strong style="font-family:var(--serif);font-size:28px;font-weight:600">Your visit</strong>
       <dl><dt>Day</dt><dd id="sDay"></dd><dt>Time</dt><dd id="sTime"></dd><dt>Guests</dt><dd id="sGuests"></dd><dt>Access</dt><dd id="sAccess">None</dd></dl>
       <div class="tot"><span>Entry <small style="color:var(--soft)" id="sCalc"></small></span><b id="sTotal"></b></div>
-      <p style="margin:0;padding:12px 14px;border-radius:14px;background:var(--cream);font-size:14px">All payments are non-refundable. {todo(settings.rules?.rescheduling, "Rescheduling policy to confirm.")}</p>
+      <p style="margin:0;padding:12px 14px;border-radius:14px;background:var(--cream);font-size:14px">{payOnArrival ? "Pay when you arrive, by cash or card. Can't make it? Please call us so we can offer your place to someone else." : "All payments are non-refundable."} {todo(settings.rules?.rescheduling, "Rescheduling policy to confirm.")}</p>
       <button class="btn book" type="button" id="pay" disabled>Pay and book</button>
       <small style="text-align:center;color:var(--soft)" id="hint">Choose a time to continue.</small>
       <small style="text-align:center;color:var(--soft)">Preview only. No payment is taken.</small>

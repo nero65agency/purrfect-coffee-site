@@ -4,7 +4,7 @@ import TopBar from "../components/TopBar.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BookingDialog from "../components/BookingDialog.astro";
-import { settings, hours } from "../lib/content";
+import { settings, hours, catWord } from "../lib/content";
 
 interface Props {
   title?: string;
@@ -12,11 +12,16 @@ interface Props {
 }
 const {
   title = "The Purr-fect Coffee Shop | Cat café in Skegness",
-  description = "Skegness's cat café on the High Street. Spend an hour with our seven resident cats, with coffee, cake and light lunches. From £5 per person.",
+  description = `Skegness's cat café on the High Street. Spend an hour with our ${catWord} resident cats, with coffee, cake and light lunches. From ${settings.entry?.weekday ?? "£5"} per person.`,
 } = Astro.props;
 
 // Read by the page script for the live open/closed status, week table and booking screen.
-const siteData = { days: hours.days ?? [], entry: settings.entry ?? {}, rules: settings.rules ?? {} };
+const siteData = {
+  days: hours.days ?? [],
+  entry: settings.entry ?? {},
+  rules: settings.rules ?? {},
+  payOnArrival: (settings.rules?.payment ?? "Pay on arrival") !== "Pay online when booking",
+};
 ---
 <!doctype html>
 <html lang="en-GB" data-theme="light" style="color-scheme:only light;background:#FFFFFF">

@@ -54,8 +54,14 @@ export default defineConfig({
             name: "rules",
             label: "Booking rules",
             fields: [
-              { type: "number", name: "maxGuests", label: "Most guests per hour" },
+              { type: "number", name: "maxGuests", label: "Most guests per hour", description: "Including children." },
               { type: "number", name: "maxChildren", label: "Most children per hour" },
+              {
+                type: "string",
+                name: "payment",
+                label: "How people pay",
+                options: ["Pay on arrival", "Pay online when booking"],
+              },
               { type: "number", name: "minAge", label: "Youngest age allowed" },
               {
                 type: "string",
