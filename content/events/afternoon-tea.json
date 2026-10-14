@@ -3,7 +3,7 @@
   "when": "Bookings only",
   "description": "Sweet and savoury selection for two, with free entry. £30 for 2 people.",
   "image": "/uploads/events/aftertea.jpg",
-  "bookable": true,
+  "bookable": false,
   "hidden": false,
   "order": 4
 }
