@@ -15,10 +15,10 @@
   "rules": {
     "maxGuests": 15,
     "maxChildren": 4,
+    "onlineBooking": true,
+    "payment": "Pay on arrival",
     "minAge": 5,
-    "rescheduling": "",
-    "onlineBooking": false,
-    "payment": "Pay on arrival"
+    "rescheduling": ""
   },
   "parking": "",
   "access": "",
