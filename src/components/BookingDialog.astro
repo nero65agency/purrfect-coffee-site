@@ -1,6 +1,5 @@
 ---
-import { settings, todo, telHref, bookingOn } from "../lib/content";
-const payOnArrival = (settings.rules?.payment ?? "Pay on arrival") !== "Pay online when booking";
+import { settings, todo, telHref, bookingOn, payOnArrival } from "../lib/content";
 ---
 <dialog class:list={["book", { off: !bookingOn }]} id="book" aria-labelledby={bookingOn ? "bookTitle" : "offTitle"}>
   {!bookingOn && (
@@ -14,20 +13,20 @@ const payOnArrival = (settings.rules?.payment ?? "Pay on arrival") !== "Pay onli
   <div class="bk" id="bkForm">
     <div>
       <h2 id="bookTitle">Book a visit</h2>
-      <p style="color:var(--soft);margin:10px 0 28px">1-hour visits with up to {settings.rules?.maxGuests ?? 15} guests and {settings.rules?.maxChildren ?? 6} children per slot. {settings.entry?.weekday} weekdays, {settings.entry?.saturday} Saturdays, {settings.entry?.sunday} Sundays. Food and drinks are bought separately inside.</p>
+      <p style="color:var(--soft);margin:10px 0 28px">1-hour visits with up to {settings.rules?.maxGuests ?? 15} guests and {settings.rules?.maxChildren ?? 4} children per slot. {settings.entry?.weekday} weekdays, {settings.entry?.saturday} Saturdays, {settings.entry?.sunday} Sundays. Food and drinks are bought separately inside.</p>
       <fieldset><legend>Choose a day</legend><div class="days" id="days"></div><p id="dayNote" style="margin:12px 0 0;font-size:15px;color:var(--soft)"></p></fieldset>
       <fieldset><legend>Choose a time</legend><div class="slots" id="slots"></div></fieldset>
       <fieldset><legend>Who's coming?</legend>
         <div class="stepper"><span><b>Adults</b><small>16 and over</small></span><span class="c"><button type="button" data-step="adults" data-d="-1" aria-label="Remove an adult">−</button><output id="adults">2</output><button type="button" data-step="adults" data-d="1" aria-label="Add an adult">+</button></span></div>
         <div class="stepper"><span><b>Children</b><small>Aged {settings.rules?.minAge ?? 5} to 15, supervised by an adult</small></span><span class="c"><button type="button" data-step="children" data-d="-1" aria-label="Remove a child">−</button><output id="children">0</output><button type="button" data-step="children" data-d="1" aria-label="Add a child">+</button></span></div>
-        <label id="agesWrap" style="display:none;flex-direction:column;gap:6px;font-weight:700;font-size:15px">Children's ages<input type="text" placeholder="For example: 6 and 9"></label>
+        <label id="agesWrap" style="display:none;flex-direction:column;gap:6px;font-weight:700;font-size:15px">Children's ages<input type="text" id="bkAges" placeholder="For example: 6 and 9"></label>
         <p class="warn" id="cap" role="alert" style="margin:8px 0 0"></p>
       </fieldset>
       <fieldset><legend>Access needs</legend>
         <label class="chk"><input type="checkbox" id="wc">Someone in our group uses a wheelchair or mobility aid</label>
         <label class="chk"><input type="checkbox" id="other">Someone in our group has another disability or access need</label>
       </fieldset>
-      <fieldset><legend>Your details</legend><div class="form"><label>Full name<input type="text"></label><label>Email<input type="email"></label><label class="full">Phone<input type="tel"></label></div></fieldset>
+      <fieldset><legend>Your details</legend><div class="form"><label>Full name<input type="text" id="bkName" autocomplete="name" required></label><label>Email<input type="email" id="bkEmail" autocomplete="email" required></label><label class="full">Phone<input type="tel" id="bkPhone" autocomplete="tel"></label></div></fieldset>
       <div class="disc"><strong style="font-size:19px">Visitor disclaimer</strong>
         <ul style="margin-top:10px"><li>The cats are live animals and may behave unpredictably. Please treat them with kindness and respect.</li><li>I'm responsible for my own safety and the safety of any children in my care.</li><li>I'll follow staff instructions and the house rules, including not chasing, picking up or handling the cats.</li><li>Cats can scratch, bite or jump, and I accept this is part of visiting a cat café.</li><li>I may be asked to leave if I behave in a way that's unsafe or distresses the cats, guests or staff.</li><li>The café isn't responsible for loss of or damage to personal property.</li><li>The cats roam freely. Air purifiers help, but allergens are still present.</li></ul>
         <label class="chk" style="font-weight:700"><input type="checkbox" id="agree">I agree to the disclaimer and house rules for everyone in my booking</label>
@@ -38,9 +37,9 @@ const payOnArrival = (settings.rules?.payment ?? "Pay on arrival") !== "Pay onli
       <dl><dt>Day</dt><dd id="sDay"></dd><dt>Time</dt><dd id="sTime"></dd><dt>Guests</dt><dd id="sGuests"></dd><dt>Access</dt><dd id="sAccess">None</dd></dl>
       <div class="tot"><span>Entry <small style="color:var(--soft)" id="sCalc"></small></span><b id="sTotal"></b></div>
       <p style="margin:0;padding:12px 14px;border-radius:14px;background:var(--cream);font-size:14px">{payOnArrival ? "Pay when you arrive, by cash or card. Can't make it? Please call us so we can offer your place to someone else." : "All payments are non-refundable."} {todo(settings.rules?.rescheduling, "Rescheduling policy to confirm.")}</p>
-      <button class="btn book" type="button" id="pay" disabled>Pay and book</button>
+      <button class="btn book" type="button" id="pay" disabled>Book my visit</button>
       <small style="text-align:center;color:var(--soft)" id="hint">Choose a time to continue.</small>
-      <small style="text-align:center;color:var(--soft)">Preview only. No payment is taken.</small>
+      
     </aside>
   </div>
   <div class="done" id="bkDone"><h2 style="font-family:var(--serif);font-size:clamp(40px,6vw,64px);font-weight:600">You're booked in</h2><p id="doneLine" style="font-size:20px;max-width:44ch;margin:0"></p><p style="color:var(--soft);margin:0">Please arrive a few minutes early and wash your hands when you arrive. The cats can't wait to meet you.</p><button class="btn ghost" type="button" id="again">Make another booking</button></div>

@@ -55,5 +55,8 @@ export const CatWord = catWord.charAt(0).toUpperCase() + catWord.slice(1);
 
 // Online booking stays switched off until the booking system is connected.
 export const bookingOn = settings.rules?.onlineBooking === true;
+// Card payments need Stripe. Until it's connected, everyone pays on arrival whatever the setting says.
+export const stripeReady = false;
+export const payOnArrival = !stripeReady || settings.rules?.payment !== "Pay online when booking";
 
 export const telHref = (phone: string) => "tel:" + String(phone || "").replace(/\s+/g, "");

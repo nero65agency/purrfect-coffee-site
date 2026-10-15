@@ -4,7 +4,7 @@ import { settings, telHref, bookingOn } from "../lib/content";
 <section class="spaces" aria-label="Spaces today">
   <div class="wrap">
     <div><strong class="t">{bookingOn ? "Spaces today" : "Today"}</strong><br><span class="status" id="status"><i></i><span>Checking hours…</span></span></div>
-    <div class="chips" id="chips" hidden={!bookingOn}></div>{!bookingOn && <p style="margin:0;color:var(--soft)">Walk in, or call ahead to check there's room: <a href={telHref(settings.phone)} style="font-weight:800">{settings.phone}</a></p>}
+    <div class="chips" id="chips" hidden={!bookingOn}></div>{!bookingOn && <p id="walkin" style="margin:0;color:var(--soft)">Walk in, or call ahead to check there's room: <a href={telHref(settings.phone)} style="font-weight:800">{settings.phone}</a></p>}
     {bookingOn && <button class="link" data-book type="button" style="background:none;border:0;padding:0;font:inherit;font-weight:800;color:inherit;cursor:pointer;text-decoration:underline;align-self:flex-start">See other days</button>}
   </div>
 </section>

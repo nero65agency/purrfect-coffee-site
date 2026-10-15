@@ -1,0 +1,175 @@
+---
+import "../styles/site.css";
+---
+<!doctype html>
+<html lang="en-GB" style="color-scheme:only light;background:#FFFFFF">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bookings | The Purr-fect Coffee Shop</title>
+<link rel="icon" href="/uploads/site/logo.jpg">
+<link rel="apple-touch-icon" href="/uploads/site/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{background:var(--cream)}
+  .adm{max-width:760px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 60px}
+  .adm h1{font-family:var(--serif);font-weight:400;font-size:40px;margin:0}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .top img{width:52px;height:52px;border-radius:12px}
+  .card{background:#fff;border-radius:22px;padding:18px;margin-bottom:14px}
+  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+  .strip button{flex-shrink:0;min-width:64px;padding:8px 10px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font:inherit;cursor:pointer;line-height:1.2}
+  .strip button[aria-pressed=true]{background:#3E2415;color:#F4E4D2;border-color:#3E2415}
+  .strip b{display:block;font-family:var(--serif);font-weight:400;font-size:22px}
+  .sum{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  .sum strong{font-size:20px}
+  .slot h2{margin:0;font-family:var(--serif);font-weight:400;font-size:26px}
+  .slot .meta{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin:6px 0 10px}
+  .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0}
+  .bar i{display:block;height:100%;background:#3E2415}
+  .slot.full .bar i{background:#9b3b2b}
+  .slot.blocked{opacity:.7}
+  .bk{border-top:1px solid var(--line);padding:10px 0;display:flex;justify-content:space-between;gap:10px}
+  .bk small{display:block;color:var(--soft)}
+  .bk.cx{opacity:.45;text-decoration:line-through}
+  select,input{min-height:44px}
+  .tiny{min-height:40px;padding:0 14px;font-size:14px}
+  .muted{color:var(--soft)}
+  #err{color:#9b3b2b;font-weight:700}
+</style>
+</head>
+<body>
+<main class="adm">
+  <div class="top"><h1>Bookings</h1><a href="/"><img src="/uploads/site/logo.jpg" alt="Back to the website"></a></div>
+
+  <section id="login" class="card" hidden>
+    <p>Enter the bookings password.</p>
+    <form id="loginForm" style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="password" id="pw" autocomplete="current-password" required style="flex:1;min-width:200px">
+      <button class="btn book" type="submit">Log in</button>
+    </form>
+    <p id="loginErr" style="color:#9b3b2b;font-weight:700"></p>
+  </section>
+
+  <section id="app" hidden>
+    <div class="strip" id="strip"></div>
+    <div class="card sum">
+      <div><strong id="dayTitle"></strong><div class="muted" id="dayTotals"></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="date" id="pick" aria-label="Go to a date">
+        <button class="btn ghost tiny" id="closeDay" type="button"></button>
+      </div>
+    </div>
+    <p id="err"></p>
+    <div id="slots"></div>
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center">
+      <span class="muted">All bookings, including disclaimer records</span>
+      <a class="btn ghost tiny" href="/api/admin/export">Download spreadsheet</a>
+    </div>
+    <p style="text-align:center"><button class="btn ghost tiny" id="logout" type="button">Log out</button></p>
+  </section>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const pad = (h) => String(h).padStart(2, "0") + ":00";
+  const fmtDay = (s, opts) => new Date(s + "T12:00:00").toLocaleDateString("en-GB", opts);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const ukToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/London" }).format(new Date());
+  const addDays = (s, n) => { const d = new Date(s + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+
+  let date = ukToday();
+  let data = null;
+
+  async function api(path, body) {
+    const r = await fetch(path, body === undefined ? { cache: "no-store" } : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    if (r.status === 401) { showLogin(); throw new Error("login"); }
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || "Something went wrong.");
+    return j;
+  }
+
+  function showLogin() { $("app").hidden = true; $("login").hidden = false; $("pw").focus(); }
+
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("loginErr").textContent = "";
+    const r = await fetch("/api/admin-login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password: $("pw").value }) });
+    if (r.ok) { $("login").hidden = true; $("pw").value = ""; load(); }
+    else $("loginErr").textContent = (await r.json().catch(() => ({}))).error || "That didn't work.";
+  });
+
+  $("logout").addEventListener("click", async () => { await fetch("/api/admin-login", { method: "DELETE" }); showLogin(); });
+
+  function strip() {
+    const t = ukToday();
+    let h = "";
+    for (let i = -1; i < 14; i++) {
+      const d = addDays(t, i);
+      h += `<button type="button" data-date="${d}" aria-pressed="${d === date}">${i === 0 ? "Today" : fmtDay(d, { weekday: "short" })}<b>${fmtDay(d, { day: "numeric" })}</b></button>`;
+    }
+    $("strip").innerHTML = h;
+    $("strip").querySelector('[aria-pressed="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+
+  async function load() {
+    $("err").textContent = "";
+    try { data = await api("/api/admin/day?date=" + date); } catch (e) { if (e.message !== "login") $("err").textContent = e.message; return; }
+    $("app").hidden = false;
+    $("pick").value = date;
+    strip();
+    $("dayTitle").textContent = (date === ukToday() ? "Today, " : "") + fmtDay(date, { weekday: "long", day: "numeric", month: "long" });
+    const live = data.bookings.filter((b) => b.status === "confirmed");
+    const guests = live.reduce((n, b) => n + b.adults + b.children, 0);
+    $("dayTotals").textContent = data.slots.length ? `${live.length} booking${live.length === 1 ? "" : "s"}, ${guests} guest${guests === 1 ? "" : "s"}` : "Closed (from the opening hours)";
+    const allBlocked = data.slots.length && data.slots.every((s) => s.cap === 0);
+    $("closeDay").hidden = !data.slots.length;
+    $("closeDay").textContent = allBlocked ? "Reopen this day" : "Stop online bookings this day";
+    $("closeDay").dataset.closed = allBlocked ? "1" : "";
+
+    $("slots").innerHTML = data.slots.map((s) => {
+      const list = data.bookings.filter((b) => b.hour === s.hour);
+      const pct = s.cap ? Math.min(100, Math.round((s.booked / s.cap) * 100)) : 0;
+      const opts = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "Blocked" : n + " places"}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
+      return `<div class="card slot${s.cap === 0 ? " blocked" : s.booked >= s.cap ? " full" : ""}">
+        <h2>${pad(s.hour)} – ${pad(s.hour + 1)}</h2>
+        <div class="meta"><span><b>${s.booked}</b> of ${s.cap} booked${s.kids ? ` · ${s.kids} child${s.kids === 1 ? "" : "ren"}` : ""}${s.cap === 0 ? " · <b>blocked online</b>" : ""}</span>
+          <label class="muted" style="display:flex;gap:8px;align-items:center">Online <select data-hour="${s.hour}" aria-label="Online places for ${pad(s.hour)}">${opts}</select></label></div>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        ${list.length ? list.map((b) => `<div class="bk${b.status === "cancelled" ? " cx" : ""}">
+            <span><b>${esc(b.name)}</b> · ${b.adults} adult${b.adults === 1 ? "" : "s"}${b.children ? `, ${b.children} child${b.children === 1 ? "" : "ren"}${b.child_ages ? " (" + esc(b.child_ages) + ")" : ""}` : ""}
+              <small>${esc(b.id)} · £${b.total}${b.access ? " · ♿ " + esc(b.access) : ""}${b.phone ? ` · <a href="tel:${esc(b.phone).replace(/\s+/g, "")}">${esc(b.phone)}</a>` : ""} · <a href="mailto:${esc(b.email)}">${esc(b.email)}</a></small></span>
+            ${b.status === "confirmed" ? `<button class="btn ghost tiny" type="button" data-cancel="${esc(b.id)}" data-name="${esc(b.name)}">Cancel</button>` : "<small>Cancelled</small>"}
+          </div>`).join("") : '<p class="muted" style="margin:0">No bookings yet.</p>'}
+      </div>`;
+    }).join("");
+  }
+
+  $("strip").addEventListener("click", (e) => { const b = e.target.closest("[data-date]"); if (b) { date = b.dataset.date; load(); } });
+  $("pick").addEventListener("change", (e) => { if (e.target.value) { date = e.target.value; load(); } });
+  $("slots").addEventListener("change", async (e) => {
+    const sel = e.target.closest("select[data-hour]"); if (!sel) return;
+    try { await api("/api/admin/slot", { date, hour: +sel.dataset.hour, places: +sel.value }); } catch (err) { $("err").textContent = err.message; }
+    load();
+  });
+  $("slots").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-cancel]"); if (!b) return;
+    if (!confirm(`Cancel ${b.dataset.name}'s booking? Their places will go back on sale.`)) return;
+    try { await api("/api/admin/cancel", { id: b.dataset.cancel }); } catch (err) { $("err").textContent = err.message; }
+    load();
+  });
+  $("closeDay").addEventListener("click", async (e) => {
+    const closing = !e.currentTarget.dataset.closed;
+    if (closing && !confirm("Stop all online bookings for this day? Existing bookings stay as they are.")) return;
+    try { await api("/api/admin/close-day", { date, closed: closing }); } catch (err) { $("err").textContent = err.message; }
+    load();
+  });
+
+  load();
+  setInterval(() => { if (!$("app").hidden && document.visibilityState === "visible") load(); }, 60000);
+</script>
+</body>
+</html>
