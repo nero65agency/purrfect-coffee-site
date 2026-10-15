@@ -1,0 +1,94 @@
+{
+  "hero": [
+    {
+      "image": "/uploads/site/tuxedo.jpg",
+      "alt": "",
+      "position": "70% 55%"
+    },
+    {
+      "image": "/uploads/site/lap.jpg",
+      "alt": "",
+      "position": "62% 50%"
+    },
+    {
+      "image": "/uploads/site/interior2.jpg",
+      "alt": "",
+      "position": "55% 50%"
+    }
+  ],
+  "about": {
+    "image": "/uploads/site/interior3.jpg",
+    "alt": "Cats napping around the café while a visitor reads with a cat on her lap",
+    "position": "40% 50%"
+  },
+  "owner": {
+    "image": "",
+    "quote": "Where coffee, cats and kindness come together.",
+    "name": "Louise, owner"
+  },
+  "band": {
+    "image": "/uploads/site/friends.jpg",
+    "text": "Relax, unwind, connect, smile"
+  },
+  "gallery": [
+    {
+      "image": "/uploads/site/interior2.jpg",
+      "alt": "The café with cats napping on chairs and the window sill",
+      "position": "60% 50%"
+    },
+    {
+      "image": "/uploads/site/cake-counter.jpg",
+      "alt": "A cat watching over the cake counter",
+      "position": "center 30%"
+    },
+    {
+      "image": "/uploads/cats/nala.jpg",
+      "alt": "Nala relaxing",
+      "position": ""
+    },
+    {
+      "image": "/uploads/site/friends.jpg",
+      "alt": "Friends chatting over coffee with a cat asleep on a chair",
+      "position": "center 70%"
+    },
+    {
+      "image": "/uploads/cats/star.jpg",
+      "alt": "Star peeking out of her cat bed",
+      "position": ""
+    }
+  ],
+  "menu": [
+    {
+      "image": "/uploads/menu/catpuccino.jpg",
+      "caption": "Catpuccino"
+    },
+    {
+      "image": "/uploads/menu/sandwich.jpg",
+      "caption": "Sandwiches and wraps"
+    },
+    {
+      "image": "/uploads/menu/platter.jpg",
+      "caption": "Platter"
+    },
+    {
+      "image": "/uploads/menu/scone.jpg",
+      "caption": "Scones"
+    },
+    {
+      "image": "/uploads/menu/cheesecakes.jpg",
+      "caption": "Cheesecakes"
+    },
+    {
+      "image": "/uploads/menu/hotchoc.jpg",
+      "caption": "Hot chocolate"
+    }
+  ],
+  "events": {
+    "image": "/uploads/events/crafts.jpg",
+    "alt": "A craft session with a calico cat watching from the table"
+  },
+  "shop": {
+    "image": "/uploads/site/shop.jpg",
+    "alt": "The Purr-fect Coffee shopfront on Skegness High Street"
+  }
+}

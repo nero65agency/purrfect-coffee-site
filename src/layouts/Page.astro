@@ -1,0 +1,28 @@
+---
+import "../styles/site.css";
+import Footer from "../components/Footer.astro";
+import { settings, telHref } from "../lib/content";
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en-GB" style="color-scheme:only light;background:#FFFFFF">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Remove this line at launch so Google can find the site -->
+<meta name="robots" content="noindex, nofollow">
+<title>{title} | The Purr-fect Coffee Shop</title>
+<link rel="icon" href="/uploads/site/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="page-top"><div class="wrap">
+  <a href="/" aria-label="The Purr-fect Coffee Shop, home"><img src="/uploads/site/logo.jpg" alt=""></a>
+  <span style="display:flex;gap:18px;align-items:center;font-weight:700"><a href={telHref(settings.phone)}>{settings.phone}</a><a class="btn book" href="/">Back to the café</a></span>
+</div></header>
+<main class="prose"><h1>{title}</h1><slot /></main>
+<Footer />
+</body>
+</html>

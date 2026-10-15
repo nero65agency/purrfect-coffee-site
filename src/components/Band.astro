@@ -1,1 +1,5 @@
-<section class="band" aria-label="Relax, unwind, connect, smile"><img src="/uploads/site/friends.jpg" alt=""><p>Relax, unwind, connect, smile</p></section>
+---
+import { photos } from "../lib/content";
+const band = photos.band ?? {};
+---
+{band.image && <section class="band" aria-label={band.text || "Life at the café"}><img src={band.image} alt=""><p>{band.text}</p></section>}

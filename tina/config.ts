@@ -30,8 +30,13 @@ export default defineConfig({
           { type: "string", name: "phone", label: "Phone number" },
           { type: "string", name: "email", label: "Email address" },
           { type: "string", name: "address", label: "Address" },
-          { type: "string", name: "facebookUrl", label: "Facebook page link" },
-          { type: "string", name: "googleReviewUrl", label: "Google review link" },
+          { type: "string", name: "facebookUrl", label: "Facebook page link", description: "Facebook buttons stay hidden until this is filled in." },
+          {
+            type: "string",
+            name: "googleReviewUrl",
+            label: "Google review link",
+            description: "From Google Business Profile > Ask for reviews. Until then, the button opens the café on Google Maps.",
+          },
           {
             type: "string",
             name: "topBar",
@@ -154,8 +159,83 @@ export default defineConfig({
             type: "string",
             name: "note",
             label: "Special notice",
-            description: "e.g. Closed Boxing Day. Leave empty to hide.",
+            description: "Shows in the bar at the very top of the site, e.g. Closing at 3pm on Friday. Leave empty to hide.",
           },
+        ],
+      },
+
+      // ---------- Photos ----------
+      {
+        name: "photos",
+        label: "Photos",
+        path: "content/photos",
+        format: "json",
+        match: { include: "photos" },
+        ui: singleDoc,
+        fields: [
+          {
+            type: "object", name: "hero", label: "Top of the page (slideshow)", list: true,
+            description: "1 to 5 photos, shown in turn. Wide (landscape) photos work best.",
+            ui: { itemProps: (item) => ({ label: item?.alt || item?.image?.split("/").pop() }) },
+            fields: [
+              { type: "image", name: "image", label: "Photo" },
+              { type: "string", name: "alt", label: "Photo description", description: "For screen readers. Leave empty for decoration." },
+              { type: "string", name: "position", label: "Photo crop", description: "Which part to keep in view, e.g. center 40%. Leave as it is if unsure." },
+            ],
+          },
+          { type: "object", name: "about", label: "More than just a coffee shop", fields: [
+              { type: "image", name: "image", label: "Photo" },
+              { type: "string", name: "alt", label: "Photo description", description: "For screen readers. Leave empty for decoration." },
+              { type: "string", name: "position", label: "Photo crop", description: "Which part to keep in view, e.g. center 40%. Leave as it is if unsure." },
+            ] },
+          {
+            type: "object", name: "owner", label: "Louise's photo and quote",
+            fields: [
+              { type: "image", name: "image", label: "Photo of Louise" },
+              { type: "string", name: "quote", label: "Quote" },
+              { type: "string", name: "name", label: "Name under the quote" },
+            ],
+          },
+          {
+            type: "object", name: "band", label: "Wide photo strip",
+            fields: [{ type: "image", name: "image", label: "Photo" }, { type: "string", name: "text", label: "Words on the photo" }],
+          },
+          {
+            type: "object", name: "gallery", label: "Life at the café", list: true,
+            description: "5 photos look best. The first one shows large.",
+            ui: { itemProps: (item) => ({ label: item?.alt || item?.image?.split("/").pop() }) },
+            fields: [
+              { type: "image", name: "image", label: "Photo" },
+              { type: "string", name: "alt", label: "Photo description", description: "For screen readers. Leave empty for decoration." },
+              { type: "string", name: "position", label: "Photo crop", description: "Which part to keep in view, e.g. center 40%. Leave as it is if unsure." },
+            ],
+          },
+          {
+            type: "object", name: "menu", label: "Menu photos", list: true,
+            ui: { itemProps: (item) => ({ label: item?.caption }) },
+            fields: [{ type: "image", name: "image", label: "Photo" }, { type: "string", name: "caption", label: "Caption" }],
+          },
+          {
+            type: "object", name: "events", label: "What's on photo",
+            fields: [{ type: "image", name: "image", label: "Photo" }, { type: "string", name: "alt", label: "Photo description" }],
+          },
+          {
+            type: "object", name: "shop", label: "Shop front (Visit us)",
+            fields: [{ type: "image", name: "image", label: "Photo" }, { type: "string", name: "alt", label: "Photo description" }],
+          },
+        ],
+      },
+
+      // ---------- Pages ----------
+      {
+        name: "pages",
+        label: "Policy pages",
+        path: "content/pages",
+        format: "md",
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "title", label: "Title", isTitle: true, required: true },
+          { type: "rich-text", name: "body", label: "Page text", isBody: true },
         ],
       },
 

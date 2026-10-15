@@ -1,10 +1,12 @@
 ---
-import { menu, todo } from "../lib/content";
+import { menu, todo, photos } from "../lib/content";
 ---
 <section class="sec cream" id="menu">
   <div class="wrap">
     <div class="headrow"><div class="head"><div class="bar"></div><h2 class="h2">On the menu</h2></div><span class="loyal">Loyalty card: buy 5 drinks, get your 6th free</span></div>
-    <div class="tiles"><figure class="tile"><img src="/uploads/menu/catpuccino.jpg" alt="Catpuccino"><figcaption>Catpuccino</figcaption></figure><figure class="tile"><img src="/uploads/menu/sandwich.jpg" alt="Sandwiches and wraps"><figcaption>Sandwiches and wraps</figcaption></figure><figure class="tile"><img src="/uploads/menu/platter.jpg" alt="Platter"><figcaption>Platter</figcaption></figure><figure class="tile"><img src="/uploads/menu/scone.jpg" alt="Scones"><figcaption>Scones</figcaption></figure><figure class="tile"><img src="/uploads/menu/cheesecakes.jpg" alt="Cheesecakes"><figcaption>Cheesecakes</figcaption></figure><figure class="tile"><img src="/uploads/menu/hotchoc.jpg" alt="Hot chocolate"><figcaption>Hot chocolate</figcaption></figure></div>
+    <div class="tiles">{(photos.menu ?? []).filter((t: any) => t?.image).map((t: any) => (
+      <figure class="tile"><img src={t.image} alt={t.caption || ""} loading="lazy"><figcaption>{t.caption}</figcaption></figure>
+    ))}</div>
     <div class="mcols">{menu.filter((sec) => sec.items.length).map((sec) => {
       const list = sec.items.length === 1 && sec.items[0].options?.length ? sec.items[0] : null;
       return (
@@ -21,6 +23,6 @@ import { menu, todo } from "../lib/content";
       );
     })}</div>
     <div class="ctaline" style="margin-top:0;margin-bottom:24px"><button class="btn book" data-book type="button">Book a table with the cats</button></div>
-    <p style="margin:28px 0 0;color:var(--soft)">Passing by? Grab a hot or cold drink, or anything from our takeaway menu, at the hatch for £3.50 each. <a href="#" class="link">Allergen information</a></p>
+    <p style="margin:28px 0 0;color:var(--soft)">Passing by? Grab a hot or cold drink, or anything from our takeaway menu, at the hatch for £3.50 each. <a href="/allergens" class="link">Allergen information</a></p>
   </div>
 </section>

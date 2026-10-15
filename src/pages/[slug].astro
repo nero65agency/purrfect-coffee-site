@@ -1,0 +1,11 @@
+---
+import Page from "../layouts/Page.astro";
+import { policyPages } from "../lib/content";
+
+export function getStaticPaths() {
+  return policyPages.map((p) => ({ params: { slug: p.slug }, props: { page: p } }));
+}
+const { page } = Astro.props as any;
+const Content = page.Content;
+---
+<Page title={page.title}><Content /></Page>

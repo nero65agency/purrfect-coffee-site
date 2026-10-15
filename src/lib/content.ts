@@ -11,6 +11,19 @@ const byOrder = (a: Json, b: Json) => (a.order ?? 99) - (b.order ?? 99);
 export const settings: Json = load(import.meta.glob("/content/settings/site.json", { eager: true }))[0] ?? {};
 export const hours: Json = load(import.meta.glob("/content/hours/hours.json", { eager: true }))[0] ?? { days: [] };
 
+export const photos: Json = load(import.meta.glob("/content/photos/photos.json", { eager: true }))[0] ?? {};
+
+// Policy pages (Markdown). Astro turns each file into a renderable component.
+export const policyPages = Object.entries(import.meta.glob("/content/pages/*.md", { eager: true })).map(
+  ([path, m]: [string, any]) => ({ slug: path.split("/").pop()!.replace(/\.md$/, ""), title: m.frontmatter?.title ?? "", Content: m.Content })
+);
+
+// Links that point somewhere real, or nothing (so no dead "#" buttons).
+export const facebookUrl: string = settings.facebookUrl || "";
+export const reviewUrl: string =
+  settings.googleReviewUrl ||
+  "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("The Purr-fect Coffee Shop, " + (settings.address || "Skegness"));
+
 export const cats = load(import.meta.glob("/content/cats/*.json", { eager: true })).sort(byOrder);
 const eventFiles = import.meta.glob("/content/events/*.json", { eager: true });
 const allEvents = Object.entries(eventFiles).map(([path, m]: [string, any]) => ({

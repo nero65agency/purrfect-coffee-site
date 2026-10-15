@@ -1,15 +1,23 @@
 ---
-import { catWord } from "../lib/content";
+import { catWord, photos, settings } from "../lib/content";
+const slides = (photos.hero ?? []).filter((p: any) => p?.image).slice(0, 5);
+const n = Math.max(slides.length, 1);
+const each = 7; // seconds per photo
+const f = 100 / n;
+const keyframes = n > 1
+  ? `@keyframes heroFade{0%{opacity:0}${(f * 0.18).toFixed(2)}%{opacity:1}${f.toFixed(2)}%{opacity:1}${(f * 1.18).toFixed(2)}%{opacity:0}100%{opacity:0}}`
+  : "";
 ---
 <section class="hero" aria-label="Welcome">
-  <div class="slide s1"><img src="/uploads/site/tuxedo.jpg" alt="" style="object-position:70% 55%"></div>
-  <div class="slide s2"><img src="/uploads/site/lap.jpg" alt="" style="object-position:62% 50%"></div>
-  <div class="slide s3"><img src="/uploads/site/interior2.jpg" alt="" style="object-position:55% 50%"></div>
+  {keyframes && <style set:html={keyframes}></style>}
+  {slides.map((p: any, i: number) => (
+    <div class={`slide s${i + 1}`} style={n > 1 ? `animation:heroFade ${n * each}s linear infinite;animation-delay:${i * each - 1}s` : "opacity:1;animation:none"}><img src={p.image} alt={p.alt || ""} style={p.position ? `object-position:${p.position}` : undefined}></div>
+  ))}
   <div class="wrap">
     <div class="left">
       <span class="pill"><i></i>Now open on Skegness High Street</span>
       <h1>Coffee, cake and <em>cat cuddles</em></h1>
-      <p class="sub">Skegness's own cat café. Spend an hour with our {catWord} resident cats, from £5 per person.</p>
+      <p class="sub">Skegness's own cat café. Spend an hour with our {catWord} resident cats, from {settings.entry?.weekday ?? "£5"} per person.</p>
       <div class="ctas"><button class="btn book" data-book type="button">Book your visit</button><a class="btn line-light" href="#week">What's on this week</a></div>
       <p class="hero-rate"><span class="stars">★★★★★</span> 5.0 on Google, 100% recommend on Facebook</p>
     </div>

@@ -1,9 +1,11 @@
 ---
-import { catWord } from "../lib/content";
+import { catWord, photos } from "../lib/content";
+const about = photos.about ?? {};
+const owner = photos.owner ?? {};
 ---
 <section class="sec" id="about">
   <div class="wrap split">
-    <div class="img"><img src="/uploads/site/interior3.jpg" alt="Cats napping around the café while a visitor reads with a cat on her lap" style="object-position:40% 50%"></div>
+    <div class="img"><img src={about.image} alt={about.alt || ""} style={about.position ? `object-position:${about.position}` : undefined}></div>
     <div class="txt">
       <div class="bar"></div>
       <h2 class="h2">More than just a coffee shop</h2>
@@ -13,7 +15,7 @@ import { catWord } from "../lib/content";
         <li><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B98B63" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.5-5 5-5s5 2 5 5"/><path d="M14 20c0-2.5 1.5-4 3-4s3.5 1.5 3.5 4"/></svg>Meet new people</li>
         <li><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B98B63" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Support our cats</li>
       </ul>
-      <div class="quote"><span class="ph">[Photo of Louise]</span><span><q>Where coffee, cats and kindness come together.</q><br><small style="color:var(--soft)">Louise, owner</small></span></div>
+      <div class="quote">{owner.image && <img class="ph" src={owner.image} alt={owner.name || "Louise"} style="object-fit:cover">}<span><q>{owner.quote}</q><br><small style="color:var(--soft)">{owner.name}</small></span></div>
     </div>
   </div>
 </section>

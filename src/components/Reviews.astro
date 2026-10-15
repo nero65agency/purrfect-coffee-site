@@ -1,6 +1,5 @@
 ---
-import { settings, reviews } from "../lib/content";
-const facebook = settings.facebookUrl || "#";
+import { reviews, reviewUrl, facebookUrl } from "../lib/content";
 ---
 <section class="sec" id="reviews">
   <div class="wrap">
@@ -9,6 +8,6 @@ const facebook = settings.facebookUrl || "#";
     <div class="revs">{reviews.map((rv) => (
       <figure class="rv"><span class="stars" aria-label={`${rv.rating ?? 5} out of 5 stars`}>{"★".repeat(rv.rating ?? 5)}</span><blockquote>“{rv.quote}”</blockquote><figcaption>{rv.author}, {rv.source}</figcaption></figure>
     ))}</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px"><button class="btn book" data-book type="button">Book your visit</button><a class="btn ghost" href={settings.googleReviewUrl || "#"}>Leave a Google review</a><a class="btn ghost" href={facebook}>Recommend us on Facebook</a></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px"><button class="btn book" data-book type="button">Book your visit</button><a class="btn ghost" href={reviewUrl} target="_blank" rel="noopener">Leave a Google review</a>{facebookUrl && <a class="btn ghost" href={facebookUrl} target="_blank" rel="noopener">Recommend us on Facebook</a>}</div>
   </div>
 </section>

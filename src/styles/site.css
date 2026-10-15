@@ -72,7 +72,7 @@ nav.main a{text-decoration:none}
 .rev q{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.4;padding-top:12px;border-top:1px solid rgba(255,255,255,.3)}
 .rev small{color:#F4E4D2}
 @media (max-width:900px){.hero .wrap{grid-template-columns:1fr;padding-block:120px 48px}.hero::after{background:linear-gradient(180deg,rgba(36,22,13,.25) 0%,rgba(36,22,13,.88) 65%)}}
-@media (prefers-reduced-motion: reduce){.slide,.slide img{animation:none}.s1{opacity:1}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion: reduce){.slide,.slide img{animation:none !important}.s1{opacity:1 !important}html{scroll-behavior:auto}}
 
 /* spaces */
 .spaces{border-bottom:1px solid var(--line2)}
@@ -346,3 +346,13 @@ dialog.book.off .bk, dialog.book.off .done{display:none !important}
 .bkoff h2{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.1}
 .bkoff p{margin:0;font-size:18px;color:var(--soft)}
 .bkoff .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+
+/* policy pages */
+.page-top{border-bottom:1px solid var(--line);background:var(--paper)}
+.page-top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px}
+.page-top img{width:64px;height:64px;border-radius:12px}
+.prose{max-width:720px;margin:0 auto;padding:clamp(40px,7vw,90px) 20px}
+.prose h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6vw,64px);line-height:1.05;margin:0 0 28px}
+.prose h2{font-family:var(--serif);font-weight:400;font-size:28px;margin:36px 0 10px}
+.prose p,.prose li{font-size:18px;line-height:1.65}
+.prose a{text-decoration:underline}
