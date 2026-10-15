@@ -12,12 +12,12 @@ const topicLine = (topics.slice(0, -1).join(", ") + " or " + topics[topics.lengt
       <p class="lede" style="margin:0">{topicLine}</p>
       <p style="margin:0;font-weight:700;line-height:1.9"><a href={telHref(settings.phone)}>{settings.phone}</a><br>{facebookUrl && <><a href={facebookUrl}>Message us on Facebook</a><br></>}{settings.email ? <a href={`mailto:${settings.email}`}>{settings.email}</a> : <span style="color:var(--soft)">{todo("", "Business email")}</span>}</p>
     </div>
-    <div class="form" style="align-content:start">
-      <strong class="full" style="font-family:var(--serif);font-weight:400;font-size:28px">The quickest ways to reach us</strong>
-      <a class="btn book full" href={telHref(settings.phone)}>Call {settings.phone}</a>
-      {facebookUrl && <a class="btn ghost full" href={facebookUrl} target="_blank" rel="noopener">Message us on Facebook</a>}
-      {settings.email && <a class="btn ghost full" href={`mailto:${settings.email}`}>Email {settings.email}</a>}
-      <p class="full" style="margin:0;color:var(--soft)">Want to sponsor a cat, or ask about a party? Call us or ask at the counter next time you visit.</p>
+    <div class="reach">
+      <h3>The quickest ways to reach us</h3>
+      <a class="btn book" href={telHref(settings.phone)}>Call {settings.phone}</a>
+      {facebookUrl && <a class="btn ghost" href={facebookUrl} target="_blank" rel="noopener">Message us on Facebook</a>}
+      {settings.email && <a class="btn ghost" href={`mailto:${settings.email}`}>Email {settings.email}</a>}
+      <p>Want to sponsor a cat, or ask about a party? Call us or ask at the counter next time you visit.</p>
     </div>
   </div>
 </section>

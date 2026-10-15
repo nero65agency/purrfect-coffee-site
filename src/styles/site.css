@@ -356,3 +356,17 @@ dialog.book.off .bk, dialog.book.off .done{display:none !important}
 .prose h2{font-family:var(--serif);font-weight:400;font-size:28px;margin:36px 0 10px}
 .prose p,.prose li{font-size:18px;line-height:1.65}
 .prose a{text-decoration:underline}
+
+/* contact card */
+.reach{grid-column:7/span 6;display:flex;flex-direction:column;gap:14px;padding:clamp(24px,4vw,40px);border-radius:28px;background:var(--card, #fff)}
+.reach h3{margin:0 0 6px;font-family:var(--serif);font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
+.reach .btn{justify-content:center;text-align:center}
+.reach p{margin:6px 0 0;color:var(--soft)}
+/* click-to-load map, full width under the visit details */
+.visit .split{row-gap:32px}
+.mapbox{grid-column:1/-1;order:3;border-radius:32px;overflow:hidden;aspect-ratio:21/8;background:var(--cream)}
+.mapbox iframe{width:100%;height:100%;border:0;display:block}
+.mapcover{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center}
+.mapcover strong{font-family:var(--serif);font-weight:400;font-size:28px}
+.mapcover span{color:var(--soft);font-size:15px}
+@media (max-width:760px){.mapbox{aspect-ratio:4/3}}
