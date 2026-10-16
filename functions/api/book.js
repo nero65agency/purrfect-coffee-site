@@ -1,10 +1,10 @@
 // POST /api/book  ->  creates a booking if there's still room (checked in one step, so two
 // people can't take the last places at the same time).
-import { dayRule, isPast, londonNow, addDays, isDate, makeRef, json, rules, pad, people, NAMES, weekday, DAYS_AHEAD, DISCLAIMER_VERSION } from "../../lib-api/booking.js";
+import { dayRule, isPast, londonNow, addDays, isDate, makeRef, json, rules, DAYS_AHEAD, DISCLAIMER_VERSION } from "../../lib-api/booking.js";
 
 const clean = (v, max) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, max);
 
-export async function onRequestPost({ request, env, waitUntil }) {
+export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ error: "Booking database isn't connected yet." }, 503);
   let b;
   try { b = await request.json(); } catch { return json({ error: "Something went wrong. Please try again." }, 400); }
@@ -38,16 +38,6 @@ export async function onRequestPost({ request, env, waitUntil }) {
          rule.price, rule.price * (adults + children), nowIso, DISCLAIMER_VERSION, rule.cap, rules.maxChildren).run();
 
   if (!res.meta || res.meta.changes !== 1) return json({ error: "Sorry, that slot has just filled up. Please choose another time." }, 409);
-  // Phone alert for Louise (free ntfy app). Only runs once NTFY_TOPIC is set in Cloudflare.
-  if (env.NTFY_TOPIC) {
-    const d = new Date(date + "T12:00:00Z");
-    const when = `${NAMES[weekday(date)].slice(0, 3)} ${d.getUTCDate()}/${d.getUTCMonth() + 1} at ${pad(hour)}`;
-    const send = fetch("https://ntfy.sh/" + encodeURIComponent(env.NTFY_TOPIC), {
-      method: "POST",
-      headers: { Title: "New booking", Tags: "cat", Click: new URL("/bookings", request.url).toString() },
-      body: `${name}: ${when}, ${people(adults, children)}${access ? " (" + access + ")" : ""}`,
-    }).catch(() => {});
-    if (waitUntil) waitUntil(send); else await send;
-  }
+  // Louise will get an email for each booking once her domain and email are set up.
   return json({ ok: true, ref, date, hour, adults, children, total: rule.price * (adults + children) });
 }
