@@ -29,8 +29,8 @@ export async function onRequestPost({ request, env }) {
   const nowIso = new Date().toISOString();
   const res = await env.DB.prepare(
     `INSERT INTO bookings (id, date, hour, adults, children, child_ages, name, email, phone, access,
-       price_each, total, payment, status, disclaimer_at, disclaimer_version, created_at)
-     SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'on_arrival', 'confirmed', ?13, ?14, ?13
+       price_each, total, payment, status, disclaimer_at, disclaimer_version, created_at, source)
+     SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'on_arrival', 'confirmed', ?13, ?14, ?13, 'online'
      WHERE (SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?4 + ?5
            <= COALESCE((SELECT max_guests FROM slot_overrides WHERE date = ?2 AND hour = ?3), ?15)
        AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?5 <= ?16`

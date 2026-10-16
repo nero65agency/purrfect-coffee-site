@@ -14,102 +14,170 @@ import "../styles/site.css";
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body{background:var(--cream)}
-  .adm{max-width:760px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 60px}
-  .adm h1{font-family:var(--serif);font-weight:400;font-size:40px;margin:0}
-  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-  .top img{width:52px;height:52px;border-radius:12px}
-  .card{background:#fff;border-radius:22px;padding:18px;margin-bottom:14px}
-  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
-  .strip button{flex-shrink:0;min-width:64px;padding:8px 10px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font:inherit;cursor:pointer;line-height:1.2}
-  .strip button[aria-pressed=true]{background:#3E2415;color:#F4E4D2;border-color:#3E2415}
-  .strip b{display:block;font-family:var(--serif);font-weight:400;font-size:22px}
-  .sum{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-  .sum strong{font-size:20px}
-  .slot h2{margin:0;font-family:var(--serif);font-weight:400;font-size:26px}
-  .slot .meta{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin:6px 0 10px}
-  .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0}
-  .bar i{display:block;height:100%;background:#3E2415}
-  .slot.full .bar i{background:#9b3b2b}
-  .slot.blocked{opacity:.7}
-  .bk{border-top:1px solid var(--line);padding:10px 0;display:flex;justify-content:space-between;gap:10px}
-  .bk small{display:block;color:var(--soft)}
-  .bk.cx{opacity:.45;text-decoration:line-through}
-  select,input{min-height:44px}
+  body{background:#F4E4D2;color:#3E2415}
+  .adm{max-width:720px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 14px 80px}
+  h1,h2,.big{font-family:var(--serif);font-weight:400;margin:0}
+  h1{font-size:36px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .card{background:#fff;border-radius:20px;padding:16px;margin-bottom:10px}
+  .muted{color:#7a6252}
   .tiny{min-height:40px;padding:0 14px;font-size:14px}
-  .muted{color:var(--soft)}
-  #err{color:#9b3b2b;font-weight:700}
+  /* day strip */
+  .strip{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:8px;scrollbar-width:none}
+  .strip button{flex-shrink:0;width:66px;padding:8px 4px;border-radius:16px;border:1.5px solid #e3cfba;background:#fff;font:inherit;line-height:1.15;cursor:pointer;color:inherit}
+  .strip button[aria-pressed=true]{background:#3E2415;color:#F4E4D2;border-color:#3E2415}
+  .strip b{display:block;font-family:var(--serif);font-weight:400;font-size:24px}
+  .strip i{display:block;font-style:normal;font-size:12px;font-weight:700;margin-top:2px}
+  /* day heading */
+  .dayhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:6px 2px 12px}
+  .dayhead .big{font-size:28px;line-height:1.1}
+  /* hour rows */
+  .hour{width:100%;display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;text-align:left;background:#fff;border:0;border-radius:18px;padding:14px 16px;margin-bottom:8px;font:inherit;color:inherit;cursor:pointer}
+  .hour .t{font-family:var(--serif);font-size:24px}
+  .hour .n{font-size:20px;font-weight:700;white-space:nowrap}
+  .hour .n small{font-size:14px;font-weight:500;color:#7a6252}
+  .bar{height:8px;border-radius:99px;background:#efe2d3;overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;background:#3E2415;border-radius:99px}
+  .hour.full .bar i{background:#9b3b2b}
+  .hour.empty{opacity:.65}
+  .hour .who{font-size:14px;color:#7a6252}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:#F4E4D2;margin-left:6px;vertical-align:middle}
+  /* sheets */
+  dialog.sheet{border:0;border-radius:24px;padding:0;width:min(560px,94vw);max-height:90vh;color:inherit}
+  dialog.sheet::backdrop{background:rgba(30,15,8,.55)}
+  .sh{padding:20px}
+  .shtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+  .x{width:40px;height:40px;border-radius:50%;border:0;background:#F4E4D2;font-size:20px;cursor:pointer;flex-shrink:0}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #efe2d3}
+  .row span:first-child{color:#7a6252}
+  .row b{text-align:right}
+  .counts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
+  .counts div{background:#F4E4D2;border-radius:16px;padding:12px;text-align:center}
+  .counts b{display:block;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1}
+  .bkrow{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:#faf3eb;border:0;border-radius:14px;padding:12px 14px;margin-top:8px;font:inherit;color:inherit;cursor:pointer}
+  .bkrow.cx{opacity:.45;text-decoration:line-through}
+  .f{display:grid;gap:12px}
+  .f label{display:grid;gap:4px;font-weight:600;font-size:15px}
+  .f input,.f select{min-height:46px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 12px;font:inherit;background:#fff}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .stepper{display:flex;align-items:center;gap:8px}
+  .stepper button{width:46px;height:46px;border-radius:50%;border:1.5px solid #e3cfba;background:#fff;font-size:22px;cursor:pointer}
+  .stepper output{min-width:34px;text-align:center;font-size:22px;font-weight:700}
+  .err{color:#9b3b2b;font-weight:700;margin:0}
+  .fab{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:5;box-shadow:0 8px 24px rgba(62,36,21,.3)}
 </style>
 </head>
 <body>
 <main class="adm">
-  <div class="top"><h1>Bookings</h1><a href="/"><img src="/uploads/site/logo.jpg" alt="Back to the website"></a></div>
+  <div class="top"><h1>Bookings</h1><a href="/" class="muted">View website</a></div>
 
   <section id="login" class="card" hidden>
-    <p>Enter the bookings password.</p>
+    <p style="margin-top:0">Enter the bookings password.</p>
     <form id="loginForm" style="display:flex;gap:10px;flex-wrap:wrap">
-      <input type="password" id="pw" autocomplete="current-password" required style="flex:1;min-width:200px">
+      <input type="password" id="pw" autocomplete="current-password" required style="flex:1;min-width:200px;min-height:46px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 12px;font:inherit">
       <button class="btn book" type="submit">Log in</button>
     </form>
-    <p id="loginErr" style="color:#9b3b2b;font-weight:700"></p>
+    <p class="err" id="loginErr"></p>
   </section>
 
   <section id="app" hidden>
     <div class="strip" id="strip"></div>
-    <div class="card sum">
-      <div><strong id="dayTitle"></strong><div class="muted" id="dayTotals"></div></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="date" id="pick" aria-label="Go to a date">
-        <button class="btn ghost tiny" id="closeDay" type="button"></button>
-      </div>
+    <div class="dayhead">
+      <div><div class="big" id="dayTitle"></div><div class="muted" id="dayTotals"></div></div>
+      <input type="date" id="pick" aria-label="Go to a date" style="min-height:40px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 8px;font:inherit;background:#fff">
     </div>
-    <p id="err"></p>
-    <div id="slots"></div>
-    <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center">
-      <span class="muted">All bookings, including disclaimer records</span>
-      <a class="btn ghost tiny" href="/api/admin/export">Download spreadsheet</a>
+    <p class="err" id="err"></p>
+    <div id="hours"></div>
+    <div class="card" style="margin-top:22px;display:grid;gap:10px">
+      <button class="btn ghost tiny" id="closeDay" type="button"></button>
+      <a class="btn ghost tiny" href="/api/admin/export">Download all bookings (spreadsheet)</a>
+      <button class="btn ghost tiny" id="logout" type="button">Log out</button>
     </div>
-    <p style="text-align:center"><button class="btn ghost tiny" id="logout" type="button">Log out</button></p>
   </section>
+  <button class="btn book fab" id="addBtn" type="button" hidden>+ Add booking</button>
 </main>
+
+<!-- One hour: who's booked -->
+<dialog class="sheet" id="hourSheet"><div class="sh">
+  <div class="shtop"><div><h2 id="hsTitle" style="font-size:30px"></h2><div class="muted" id="hsSub"></div></div><button class="x" data-close aria-label="Close">×</button></div>
+  <div class="counts"><div><b id="hsAdults">0</b>adults</div><div><b id="hsKids">0</b>children</div></div>
+  <div id="hsList"></div>
+  <button class="btn book" type="button" id="hsAdd" style="width:100%;margin-top:14px">+ Add booking at this time</button>
+  <label class="muted" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px">Places available online
+    <select id="hsPlaces" style="min-height:44px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 10px;font:inherit"></select></label>
+</div></dialog>
+
+<!-- One booking -->
+<dialog class="sheet" id="bkSheet"><div class="sh">
+  <div class="shtop"><div><h2 id="bsName" style="font-size:30px"></h2><div class="muted" id="bsWhen"></div></div><button class="x" data-close aria-label="Close">×</button></div>
+  <div class="counts"><div><b id="bsAdults">0</b>adults</div><div><b id="bsKids">0</b>children</div></div>
+  <div id="bsRows"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px" id="bsActions"></div>
+</div></dialog>
+
+<!-- Add a booking -->
+<dialog class="sheet" id="addSheet"><div class="sh">
+  <div class="shtop"><h2 style="font-size:30px">Add a booking</h2><button class="x" data-close aria-label="Close">×</button></div>
+  <form class="f" id="addForm">
+    <div class="two">
+      <label>Day<input type="date" id="aDate" required></label>
+      <label>Time<select id="aHour" required></select></label>
+    </div>
+    <div class="two">
+      <label>Adults<div class="stepper"><button type="button" data-step="aAdults" data-d="-1">−</button><output id="aAdults">2</output><button type="button" data-step="aAdults" data-d="1">+</button></div></label>
+      <label>Children<div class="stepper"><button type="button" data-step="aKids" data-d="-1">−</button><output id="aKids">0</output><button type="button" data-step="aKids" data-d="1">+</button></div></label>
+    </div>
+    <label id="aAgesWrap" hidden>Children's ages<input type="text" id="aAges" placeholder="e.g. 6 and 9"></label>
+    <label>Name<input type="text" id="aName" required autocomplete="off"></label>
+    <div class="two">
+      <label>Phone<input type="tel" id="aPhone"></label>
+      <label>Booked by<select id="aSource"><option value="phone">Phone</option><option value="walk-in">Walk-in</option><option value="other">Other</option></select></label>
+    </div>
+    <label>Email (optional)<input type="email" id="aEmail"></label>
+    <label style="display:flex;gap:10px;align-items:center;font-weight:500"><input type="checkbox" id="aDisc" style="min-height:auto;width:22px;height:22px"> Disclaimer signed in the café</label>
+    <p class="err" id="aErr"></p>
+    <button class="btn book" type="submit" id="aSave">Save booking</button>
+  </form>
+</div></dialog>
 
 <script>
   const $ = (id) => document.getElementById(id);
   const pad = (h) => String(h).padStart(2, "0") + ":00";
-  const fmtDay = (s, opts) => new Date(s + "T12:00:00").toLocaleDateString("en-GB", opts);
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const fmt = (s, o) => new Date(s + "T12:00:00").toLocaleDateString("en-GB", o);
   const ukToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/London" }).format(new Date());
   const addDays = (s, n) => { const d = new Date(s + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
+  const people = (a, c) => plural(a, "adult", "adults") + (c ? " · " + plural(c, "child", "children") : "");
+  const SRC = { online: "Online", phone: "Phone", "walk-in": "Walk-in", other: "Other" };
 
-  let date = ukToday();
-  let data = null;
+  let date = ukToday(), data = null, openHour = null;
 
   async function api(path, body) {
     const r = await fetch(path, body === undefined ? { cache: "no-store" } : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
     if (r.status === 401) { showLogin(); throw new Error("login"); }
-    const j = await r.json();
+    const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.error || "Something went wrong.");
     return j;
   }
-
-  function showLogin() { $("app").hidden = true; $("login").hidden = false; $("pw").focus(); }
+  function showLogin() { $("app").hidden = true; $("addBtn").hidden = true; $("login").hidden = false; $("pw").focus(); }
 
   $("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    $("loginErr").textContent = "";
+    e.preventDefault(); $("loginErr").textContent = "";
     const r = await fetch("/api/admin-login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password: $("pw").value }) });
     if (r.ok) { $("login").hidden = true; $("pw").value = ""; load(); }
     else $("loginErr").textContent = (await r.json().catch(() => ({}))).error || "That didn't work.";
   });
-
   $("logout").addEventListener("click", async () => { await fetch("/api/admin-login", { method: "DELETE" }); showLogin(); });
 
-  function strip() {
-    const t = ukToday();
+  async function strip() {
+    const t = ukToday(), from = addDays(t, -1);
+    let totals = {};
+    try { totals = await api(`/api/admin/summary?from=${from}&days=15`); } catch (e) {}
     let h = "";
-    for (let i = -1; i < 14; i++) {
-      const d = addDays(t, i);
-      h += `<button type="button" data-date="${d}" aria-pressed="${d === date}">${i === 0 ? "Today" : fmtDay(d, { weekday: "short" })}<b>${fmtDay(d, { day: "numeric" })}</b></button>`;
+    for (let i = 0; i < 15; i++) {
+      const d = addDays(from, i), n = totals[d] || 0;
+      h += `<button type="button" data-date="${d}" aria-pressed="${d === date}">${d === t ? "Today" : fmt(d, { weekday: "short" })}<b>${fmt(d, { day: "numeric" })}</b><i>${n ? plural(n, "guest", "guests") : "–"}</i></button>`;
     }
     $("strip").innerHTML = h;
     $("strip").querySelector('[aria-pressed="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
@@ -118,58 +186,135 @@ import "../styles/site.css";
   async function load() {
     $("err").textContent = "";
     try { data = await api("/api/admin/day?date=" + date); } catch (e) { if (e.message !== "login") $("err").textContent = e.message; return; }
-    $("app").hidden = false;
-    $("pick").value = date;
+    $("app").hidden = false; $("addBtn").hidden = false; $("pick").value = date;
     strip();
-    $("dayTitle").textContent = (date === ukToday() ? "Today, " : "") + fmtDay(date, { weekday: "long", day: "numeric", month: "long" });
     const live = data.bookings.filter((b) => b.status === "confirmed");
-    const guests = live.reduce((n, b) => n + b.adults + b.children, 0);
-    $("dayTotals").textContent = data.slots.length ? `${live.length} booking${live.length === 1 ? "" : "s"}, ${guests} guest${guests === 1 ? "" : "s"}` : "Closed (from the opening hours)";
+    const a = live.reduce((n, b) => n + b.adults, 0), c = live.reduce((n, b) => n + b.children, 0);
+    $("dayTitle").textContent = (date === ukToday() ? "Today · " : "") + fmt(date, { weekday: "long", day: "numeric", month: "long" });
+    $("dayTotals").textContent = data.slots.length ? (live.length ? `${plural(a + c, "guest", "guests")} (${people(a, c)}) in ${plural(live.length, "booking", "bookings")}` : "No bookings yet") : "Closed (opening hours)";
     const allBlocked = data.slots.length && data.slots.every((s) => s.cap === 0);
     $("closeDay").hidden = !data.slots.length;
-    $("closeDay").textContent = allBlocked ? "Reopen this day" : "Stop online bookings this day";
+    $("closeDay").textContent = allBlocked ? "Reopen online booking for this day" : "Stop online booking for this day";
     $("closeDay").dataset.closed = allBlocked ? "1" : "";
-
-    $("slots").innerHTML = data.slots.map((s) => {
-      const list = data.bookings.filter((b) => b.hour === s.hour);
-      const pct = s.cap ? Math.min(100, Math.round((s.booked / s.cap) * 100)) : 0;
-      const opts = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "Blocked" : n + " places"}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
-      return `<div class="card slot${s.cap === 0 ? " blocked" : s.booked >= s.cap ? " full" : ""}">
-        <h2>${pad(s.hour)} – ${pad(s.hour + 1)}</h2>
-        <div class="meta"><span><b>${s.booked}</b> of ${s.cap} booked${s.kids ? ` · ${s.kids} child${s.kids === 1 ? "" : "ren"}` : ""}${s.cap === 0 ? " · <b>blocked online</b>" : ""}</span>
-          <label class="muted" style="display:flex;gap:8px;align-items:center">Online <select data-hour="${s.hour}" aria-label="Online places for ${pad(s.hour)}">${opts}</select></label></div>
-        <div class="bar"><i style="width:${pct}%"></i></div>
-        ${list.length ? list.map((b) => `<div class="bk${b.status === "cancelled" ? " cx" : ""}">
-            <span><b>${esc(b.name)}</b> · ${b.adults} adult${b.adults === 1 ? "" : "s"}${b.children ? `, ${b.children} child${b.children === 1 ? "" : "ren"}${b.child_ages ? " (" + esc(b.child_ages) + ")" : ""}` : ""}
-              <small>${esc(b.id)} · £${b.total}${b.access ? " · ♿ " + esc(b.access) : ""}${b.phone ? ` · <a href="tel:${esc(b.phone).replace(/\s+/g, "")}">${esc(b.phone)}</a>` : ""} · <a href="mailto:${esc(b.email)}">${esc(b.email)}</a></small></span>
-            ${b.status === "confirmed" ? `<button class="btn ghost tiny" type="button" data-cancel="${esc(b.id)}" data-name="${esc(b.name)}">Cancel</button>` : "<small>Cancelled</small>"}
-          </div>`).join("") : '<p class="muted" style="margin:0">No bookings yet.</p>'}
-      </div>`;
+    $("hours").innerHTML = data.slots.map((s) => {
+      const list = live.filter((b) => b.hour === s.hour);
+      const ad = list.reduce((n, b) => n + b.adults, 0), ki = list.reduce((n, b) => n + b.children, 0);
+      const pct = Math.min(100, Math.round((s.booked / data.maxGuests) * 100));
+      const who = list.length ? list.slice(0, 3).map((b) => esc(b.name.split(" ")[0])).join(", ") + (list.length > 3 ? ` +${list.length - 3}` : "") : "";
+      return `<button type="button" class="hour${s.booked >= data.maxGuests ? " full" : ""}${s.booked ? "" : " empty"}" data-hour="${s.hour}">
+        <span class="t">${pad(s.hour)}</span>
+        <span><span class="who">${s.booked ? people(ad, ki) : "No bookings"}${s.cap === 0 ? '<span class="tag">Online blocked</span>' : s.changed ? `<span class="tag">Online: ${s.cap}</span>` : ""}</span>
+          <div class="bar"><i style="width:${pct}%"></i></div>${who ? `<span class="who">${who}</span>` : ""}</span>
+        <span class="n">${s.booked}<small> / ${data.maxGuests}</small></span></button>`;
     }).join("");
+    if (openHour !== null && $("hourSheet").open) showHour(openHour);
   }
 
+  function showHour(hour) {
+    openHour = hour;
+    const s = data.slots.find((x) => x.hour === hour); if (!s) return;
+    const all = data.bookings.filter((b) => b.hour === hour);
+    const live = all.filter((b) => b.status === "confirmed");
+    $("hsTitle").textContent = `${pad(hour)} – ${pad(hour + 1)}`;
+    $("hsSub").textContent = `${fmt(date, { weekday: "long", day: "numeric", month: "long" })} · ${s.booked} of ${data.maxGuests} booked`;
+    $("hsAdults").textContent = live.reduce((n, b) => n + b.adults, 0);
+    $("hsKids").textContent = live.reduce((n, b) => n + b.children, 0);
+    $("hsList").innerHTML = all.length ? all.map((b) => `<button type="button" class="bkrow${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
+        <span><b>${esc(b.name)}</b><br><span class="muted">${people(b.adults, b.children)}</span></span>
+        <span class="muted">${SRC[b.source] || "Online"} ›</span></button>`).join("") : '<p class="muted">No bookings at this time yet.</p>';
+    $("hsPlaces").innerHTML = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "None (blocked)" : n}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
+    if (!$("hourSheet").open) $("hourSheet").showModal();
+  }
+
+  function showBooking(id) {
+    const b = data.bookings.find((x) => x.id === id); if (!b) return;
+    const when = new Date(b.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    $("bsName").textContent = b.name;
+    $("bsWhen").textContent = `${fmt(b.date, { weekday: "long", day: "numeric", month: "long" })} · ${pad(b.hour)} – ${pad(b.hour + 1)}`;
+    $("bsAdults").textContent = b.adults; $("bsKids").textContent = b.children;
+    const rows = [
+      ["Status", b.status === "cancelled" ? "Cancelled" : "Booked"],
+      ["Children's ages", b.child_ages],
+      ["Access needs", b.access],
+      ["To pay on arrival", "£" + b.total],
+      ["Phone", b.phone && `<a href="tel:${esc(b.phone).replace(/\s+/g, "")}">${esc(b.phone)}</a>`],
+      ["Email", b.email && `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>`],
+      ["Booked", `${SRC[b.source] || "Online"}, ${when}`],
+      ["Disclaimer", b.disclaimer_at ? (b.disclaimer_version === "signed in café" ? "Signed in the café" : "Agreed online") : "Not signed yet"],
+      ["Reference", esc(b.id)],
+    ];
+    $("bsRows").innerHTML = rows.filter((r) => r[1]).map((r) => `<div class="row"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
+    $("bsActions").innerHTML = b.status === "confirmed"
+      ? `${b.phone ? `<a class="btn ghost tiny" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}<button class="btn ghost tiny" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
+    $("bkSheet").showModal();
+  }
+
+  // Add booking form
+  const A = { aAdults: 2, aKids: 0 };
+  function fillHours(selected) {
+    const rule = $("aDate").value === date ? data.hours : null;
+    const hours = rule || [];
+    if (!rule) { // a different day: fetch its opening times
+      api("/api/admin/day?date=" + $("aDate").value).then((d) => setHours(d.hours, selected)).catch(() => setHours([], selected));
+    } else setHours(hours, selected);
+  }
+  function setHours(hours, selected) {
+    $("aHour").innerHTML = hours.length ? hours.map((h) => `<option value="${h}" ${h === selected ? "selected" : ""}>${pad(h)}</option>`).join("") : '<option value="">Closed this day</option>';
+  }
+  function openAdd(hour) {
+    Object.assign(A, { aAdults: 2, aKids: 0 });
+    $("aAdults").textContent = 2; $("aKids").textContent = 0; $("aAgesWrap").hidden = true;
+    ["aName", "aPhone", "aEmail", "aAges"].forEach((id) => ($(id).value = ""));
+    $("aDisc").checked = false; $("aErr").textContent = ""; $("aSource").value = "phone";
+    $("aDate").value = date; fillHours(hour ?? data.hours[0]);
+    $("addSheet").showModal(); setTimeout(() => $("aName").focus(), 50);
+  }
+  $("aDate").addEventListener("change", () => fillHours());
+  $("addForm").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-step]"); if (!t) return;
+    const k = t.dataset.step; A[k] = Math.max(0, Math.min(data.maxGuests, A[k] + +t.dataset.d));
+    $(k).textContent = A[k]; $("aAgesWrap").hidden = !A.aKids;
+  });
+  $("addForm").addEventListener("submit", async (e) => {
+    e.preventDefault(); $("aErr").textContent = ""; $("aSave").disabled = true;
+    try {
+      await api("/api/admin/add", { date: $("aDate").value, hour: +$("aHour").value, adults: A.aAdults, children: A.aKids, childAges: $("aAges").value,
+        name: $("aName").value, phone: $("aPhone").value, email: $("aEmail").value, source: $("aSource").value, disclaimer: $("aDisc").checked });
+      $("addSheet").close(); date = $("aDate").value; await load();
+    } catch (err) { if (err.message !== "login") $("aErr").textContent = err.message; }
+    $("aSave").disabled = false;
+  });
+
+  // Clicks
   $("strip").addEventListener("click", (e) => { const b = e.target.closest("[data-date]"); if (b) { date = b.dataset.date; load(); } });
   $("pick").addEventListener("change", (e) => { if (e.target.value) { date = e.target.value; load(); } });
-  $("slots").addEventListener("change", async (e) => {
-    const sel = e.target.closest("select[data-hour]"); if (!sel) return;
-    try { await api("/api/admin/slot", { date, hour: +sel.dataset.hour, places: +sel.value }); } catch (err) { $("err").textContent = err.message; }
+  $("hours").addEventListener("click", (e) => { const b = e.target.closest("[data-hour]"); if (b) showHour(+b.dataset.hour); });
+  $("hsList").addEventListener("click", (e) => { const b = e.target.closest("[data-id]"); if (b) showBooking(b.dataset.id); });
+  $("hsAdd").addEventListener("click", () => { $("hourSheet").close(); openAdd(openHour); });
+  $("addBtn").addEventListener("click", () => openAdd());
+  $("hsPlaces").addEventListener("change", async (e) => {
+    try { await api("/api/admin/slot", { date, hour: openHour, places: +e.target.value }); } catch (err) { $("err").textContent = err.message; }
     load();
   });
-  $("slots").addEventListener("click", async (e) => {
+  $("bsActions").addEventListener("click", async (e) => {
     const b = e.target.closest("[data-cancel]"); if (!b) return;
-    if (!confirm(`Cancel ${b.dataset.name}'s booking? Their places will go back on sale.`)) return;
+    if (!confirm("Cancel this booking? The places go back on sale. The record is kept.")) return;
     try { await api("/api/admin/cancel", { id: b.dataset.cancel }); } catch (err) { $("err").textContent = err.message; }
-    load();
+    $("bkSheet").close(); load();
   });
   $("closeDay").addEventListener("click", async (e) => {
     const closing = !e.currentTarget.dataset.closed;
-    if (closing && !confirm("Stop all online bookings for this day? Existing bookings stay as they are.")) return;
+    if (closing && !confirm("Stop online booking for this day? Existing bookings stay as they are, and you can still add bookings here.")) return;
     try { await api("/api/admin/close-day", { date, closed: closing }); } catch (err) { $("err").textContent = err.message; }
     load();
   });
+  document.querySelectorAll("dialog.sheet").forEach((d) => {
+    d.addEventListener("click", (e) => { if (e.target === d || e.target.closest("[data-close]")) d.close(); });
+    d.addEventListener("close", () => { if (d.id === "hourSheet") openHour = null; });
+  });
 
   load();
-  setInterval(() => { if (!$("app").hidden && document.visibilityState === "visible") load(); }, 60000);
+  setInterval(() => { if (!$("app").hidden && document.visibilityState === "visible" && !document.querySelector("dialog[open]")) load(); }, 60000);
 </script>
 </body>
 </html>

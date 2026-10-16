@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS bookings (
   disclaimer_version TEXT,
   created_at TEXT NOT NULL,
   cancelled_at TEXT,
-  reminder_sent INTEGER NOT NULL DEFAULT 0
+  reminder_sent INTEGER NOT NULL DEFAULT 0,
+  source TEXT NOT NULL DEFAULT 'online'      -- online | phone | walk-in | other
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_slot ON bookings (date, hour, status);
 

@@ -6,7 +6,7 @@ export async function onRequestGet({ request, env }) {
   const date = isDate(q) ? q : londonNow().date;
   const [av, list] = await Promise.all([
     availability(env.DB, date),
-    env.DB.prepare("SELECT id, hour, adults, children, child_ages, name, email, phone, access, total, status, created_at FROM bookings WHERE date = ? ORDER BY hour, created_at").bind(date).all(),
+    env.DB.prepare("SELECT * FROM bookings WHERE date = ? ORDER BY hour, created_at").bind(date).all(),
   ]);
-  return json({ ...av, maxGuests: rules.maxGuests, maxChildren: rules.maxChildren, bookings: list.results });
+  return json({ ...av, hours: av.slots.map((x) => x.hour), maxGuests: rules.maxGuests, maxChildren: rules.maxChildren, bookings: list.results });
 }
