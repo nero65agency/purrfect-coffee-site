@@ -22,16 +22,16 @@ export async function onRequestPost({ request, env }) {
   const now = new Date().toISOString();
   const res = await env.DB.prepare(
     `INSERT INTO bookings (id, date, hour, adults, children, child_ages, name, email, phone, access,
-       price_each, total, payment, status, disclaimer_at, disclaimer_version, created_at, source)
-     SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'on_arrival', 'confirmed', ?13, ?14, ?15, ?16
+       price_each, total, payment, status, disclaimer_at, disclaimer_version, created_at, source, notes, arrived_at)
+     SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'on_arrival', 'confirmed', ?13, ?14, ?15, ?16, ?19, ?20
      WHERE (SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?4 + ?5 <= ?17
        AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?5 <= ?18`
   ).bind(ref, date, hour, adults, children, clean(b.childAges, 60), name, clean(b.email, 120), clean(b.phone, 30), clean(b.access, 120),
          rule.price, rule.price * (adults + children), b.disclaimer ? now : "", b.disclaimer ? "signed in café" : "", now, source,
-         rules.maxGuests, rules.maxChildren).run();
+         rule.cap, rules.maxChildren, clean(b.notes, 300), source === "walk-in" ? now : null).run();
 
   if (res.meta.changes !== 1) {
-    return json({ error: `That would take this hour over ${rules.maxGuests} people or ${rules.maxChildren} children.` }, 409);
+    return json({ error: `That would take this hour over ${rule.cap} people or ${rules.maxChildren} children.` }, 409);
   }
   return json({ ok: true, ref });
 }

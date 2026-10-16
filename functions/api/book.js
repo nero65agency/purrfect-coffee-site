@@ -1,10 +1,10 @@
 // POST /api/book  ->  creates a booking if there's still room (checked in one step, so two
 // people can't take the last places at the same time).
-import { dayRule, isPast, londonNow, addDays, isDate, makeRef, json, rules, DAYS_AHEAD, DISCLAIMER_VERSION } from "../../lib-api/booking.js";
+import { dayRule, isPast, londonNow, addDays, isDate, makeRef, json, rules, pad, people, NAMES, weekday, DAYS_AHEAD, DISCLAIMER_VERSION } from "../../lib-api/booking.js";
 
 const clean = (v, max) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, max);
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   if (!env.DB) return json({ error: "Booking database isn't connected yet." }, 503);
   let b;
   try { b = await request.json(); } catch { return json({ error: "Something went wrong. Please try again." }, 400); }
@@ -19,7 +19,7 @@ export async function onRequestPost({ request, env }) {
   const rule = dayRule(date);
   if (!rule.open || !rule.hours.includes(hour) || isPast(date, hour)) return json({ error: "That time isn't available. Please choose another." }, 409);
   if (!(adults >= 1) || children < 0) return json({ error: "Every booking needs at least one adult." }, 400);
-  if (adults + children > rules.maxGuests) return json({ error: `We can take up to ${rules.maxGuests} people in one booking.` }, 400);
+  if (adults + children > rule.cap) return json({ error: `We can take up to ${rule.cap} people in one booking.` }, 400);
   if (children > rules.maxChildren) return json({ error: `We can only take ${rules.maxChildren} children at a time.` }, 400);
   if (name.length < 2) return json({ error: "Please add your name." }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Please check your email address." }, 400);
@@ -35,8 +35,19 @@ export async function onRequestPost({ request, env }) {
            <= COALESCE((SELECT max_guests FROM slot_overrides WHERE date = ?2 AND hour = ?3), ?15)
        AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?5 <= ?16`
   ).bind(ref, date, hour, adults, children, ages, name, email, phone, access,
-         rule.price, rule.price * (adults + children), nowIso, DISCLAIMER_VERSION, rules.maxGuests, rules.maxChildren).run();
+         rule.price, rule.price * (adults + children), nowIso, DISCLAIMER_VERSION, rule.cap, rules.maxChildren).run();
 
   if (!res.meta || res.meta.changes !== 1) return json({ error: "Sorry, that slot has just filled up. Please choose another time." }, 409);
+  // Phone alert for Louise (free ntfy app). Only runs once NTFY_TOPIC is set in Cloudflare.
+  if (env.NTFY_TOPIC) {
+    const d = new Date(date + "T12:00:00Z");
+    const when = `${NAMES[weekday(date)].slice(0, 3)} ${d.getUTCDate()}/${d.getUTCMonth() + 1} at ${pad(hour)}`;
+    const send = fetch("https://ntfy.sh/" + encodeURIComponent(env.NTFY_TOPIC), {
+      method: "POST",
+      headers: { Title: "New booking", Tags: "cat", Click: new URL("/bookings", request.url).toString() },
+      body: `${name}: ${when}, ${people(adults, children)}${access ? " (" + access + ")" : ""}`,
+    }).catch(() => {});
+    if (waitUntil) waitUntil(send); else await send;
+  }
   return json({ ok: true, ref, date, hour, adults, children, total: rule.price * (adults + children) });
 }

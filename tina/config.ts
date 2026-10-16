@@ -148,6 +148,12 @@ export default defineConfig({
               { type: "string", name: "close", label: "Closes", description: timeHelp },
               { type: "string", name: "lastBooking", label: "Last booking", description: timeHelp },
               {
+                type: "number",
+                name: "maxGuests",
+                label: "Most guests per hour this day",
+                description: "Leave empty to use the normal limit (Café details > Booking rules).",
+              },
+              {
                 type: "string",
                 name: "special",
                 label: "What's special that day",

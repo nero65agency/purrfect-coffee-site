@@ -8,5 +8,5 @@ export async function onRequestGet({ request, env }) {
     availability(env.DB, date),
     env.DB.prepare("SELECT * FROM bookings WHERE date = ? ORDER BY hour, created_at").bind(date).all(),
   ]);
-  return json({ ...av, hours: av.slots.map((x) => x.hour), maxGuests: rules.maxGuests, maxChildren: rules.maxChildren, bookings: list.results });
+  return json({ ...av, hours: av.slots.map((x) => x.hour), maxGuests: av.roomCap, maxChildren: rules.maxChildren, bookings: list.results });
 }

@@ -48,10 +48,12 @@ export function dayRule(date) {
   const wd = weekday(date);
   const r = (hours.days || []).find((d) => d.day === NAMES[wd]);
   const price = wd === 0 ? money(settings.entry?.sunday) : wd === 6 ? money(settings.entry?.saturday) : money(settings.entry?.weekday);
-  if (!r || r.closed) return { open: false, hours: [], price };
+  // Each day can have its own limit (Opening hours > day > Most guests per hour); otherwise the normal one.
+  const cap = Number(r?.maxGuests) > 0 ? Math.min(Number(r.maxGuests), 50) : rules.maxGuests;
+  if (!r || r.closed) return { open: false, hours: [], price, cap };
   const list = [];
   for (let h = Math.ceil(num(r.open)); h <= Math.floor(num(r.lastBooking)); h++) list.push(h);
-  return { open: true, hours: list, price };
+  return { open: true, hours: list, price, cap };
 }
 
 // A slot can be booked until 30 minutes after it starts.
@@ -60,7 +62,7 @@ export const isPast = (date, hour, now = londonNow()) =>
 
 export async function availability(db, date) {
   const rule = dayRule(date);
-  if (!rule.open) return { date, open: false, price: rule.price, slots: [] };
+  if (!rule.open) return { date, open: false, price: rule.price, roomCap: rule.cap, slots: [] };
   const [b, o] = await db.batch([
     db.prepare("SELECT hour, SUM(adults + children) AS guests, SUM(children) AS kids FROM bookings WHERE date = ? AND status = 'confirmed' GROUP BY hour").bind(date),
     db.prepare("SELECT hour, max_guests FROM slot_overrides WHERE date = ?").bind(date),
@@ -69,7 +71,7 @@ export async function availability(db, date) {
   const over = Object.fromEntries(o.results.map((r) => [r.hour, r.max_guests]));
   const now = londonNow();
   const slots = rule.hours.map((h) => {
-    const cap = over[h] ?? rules.maxGuests;
+    const cap = over[h] ?? rule.cap;
     const guests = booked[h]?.guests || 0;
     const kids = booked[h]?.kids || 0;
     const past = isPast(date, h, now);
@@ -84,8 +86,11 @@ export async function availability(db, date) {
       past,
     };
   });
-  return { date, open: slots.some((s) => s.cap > 0), price: rule.price, slots };
+  return { date, open: slots.some((s) => s.cap > 0), price: rule.price, roomCap: rule.cap, slots };
 }
+
+export const pad = (h) => String(h).padStart(2, "0") + ":00";
+export const people = (a, c) => `${a} adult${a === 1 ? "" : "s"}${c ? `, ${c} child${c === 1 ? "" : "ren"}` : ""}`;
 
 export function makeRef() {
   const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";

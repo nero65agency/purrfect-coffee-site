@@ -89,6 +89,13 @@ import "../styles/site.css";
   .ad-step{display:flex;align-items:center;gap:8px}
   .ad-step button{width:46px;height:46px;border-radius:50%;border:1.5px solid #e3cfba;background:#fff;font-size:22px;cursor:pointer;color:inherit}
   .ad-step output{min-width:34px;text-align:center;font-size:22px;font-weight:700}
+  .ad-walk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 6px}
+  .ad-walk div{background:#faf3eb;border-radius:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .ad-walk span{font-weight:700}
+  .ad-walk button{width:44px;height:44px;border-radius:50%;border:0;background:#3E2415;color:#F4E4D2;font-size:22px;cursor:pointer}
+  .ad-walk button.m{background:#fff;color:#3E2415;border:1.5px solid #e3cfba}
+  .ad-ok{color:#2f7a3d;font-weight:700}
+  .ad-note{background:#fff7e0;border-radius:12px;padding:10px 12px;margin:8px 0 2px}
   .ad-fab{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:5;box-shadow:0 8px 24px rgba(62,36,21,.3)}
 </style>
 </head>
@@ -137,6 +144,13 @@ import "../styles/site.css";
 <dialog class="ad-sheet" id="hourSheet"><div class="ad-sh">
   <div class="ad-shtop"><div><h2 id="hsTitle" style="font-size:30px"></h2><div class="ad-muted" id="hsSub"></div></div><button class="ad-x" data-close aria-label="Close">×</button></div>
   <div class="ad-counts"><div><b id="hsAdults">0</b>adults</div><div><b id="hsKids">0</b>children</div></div>
+  <p class="ad-muted" style="margin:4px 0 6px;font-weight:700">Walk-ins this hour</p>
+  <div class="ad-walk">
+    <div><button type="button" class="m" data-walk="adult" data-d="-1" aria-label="One less adult walk-in">−</button><span id="wkA">0 adults</span><button type="button" data-walk="adult" data-d="1" aria-label="One more adult walk-in">+</button></div>
+    <div><button type="button" class="m" data-walk="child" data-d="-1" aria-label="One less child walk-in">−</button><span id="wkC">0 children</span><button type="button" data-walk="child" data-d="1" aria-label="One more child walk-in">+</button></div>
+  </div>
+  <p class="ad-err" id="hsErr"></p>
+  <p class="ad-muted" style="margin:10px 0 0;font-weight:700">Bookings</p>
   <div id="hsList"></div>
   <button class="btn book" type="button" id="hsAdd" style="width:100%;margin-top:14px">+ Add booking at this time</button>
   <label class="ad-muted" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px">Places available online
@@ -153,7 +167,7 @@ import "../styles/site.css";
 
 <!-- Add a booking -->
 <dialog class="ad-sheet" id="addSheet"><div class="ad-sh">
-  <div class="ad-shtop"><h2 style="font-size:30px">Add a booking</h2><button class="ad-x" data-close aria-label="Close">×</button></div>
+  <div class="ad-shtop"><h2 style="font-size:30px" id="aTitle">Add a booking</h2><button class="ad-x" data-close aria-label="Close">×</button></div>
   <form class="ad-form" id="addForm">
     <div class="ad-two">
       <label>Day<input type="date" id="aDate" required></label>
@@ -167,10 +181,11 @@ import "../styles/site.css";
     <label>Name<input type="text" id="aName" required autocomplete="off"></label>
     <div class="ad-two">
       <label>Phone<input type="tel" id="aPhone"></label>
-      <label>Booked by<select id="aSource"><option value="phone">Phone</option><option value="walk-in">Walk-in</option><option value="other">Other</option></select></label>
+      <label id="aSourceWrap">Booked by<select id="aSource"><option value="phone">Phone</option><option value="walk-in">Walk-in</option><option value="other">Other</option></select></label>
     </div>
     <label>Email (optional)<input type="email" id="aEmail"></label>
-    <label style="display:flex;gap:10px;align-items:center;font-weight:500"><input type="checkbox" id="aDisc" style="min-height:auto;width:22px;height:22px"> Disclaimer signed in the café</label>
+    <label>Notes (optional)<input type="text" id="aNotes" placeholder="e.g. birthday, nervous child, allergy"></label>
+    <label id="aDiscWrap" style="display:flex;gap:10px;align-items:center;font-weight:500"><input type="checkbox" id="aDisc" style="min-height:auto;width:22px;height:22px"> Disclaimer signed in the café</label>
     <p class="ad-err" id="aErr"></p>
     <button class="btn book" type="submit" id="aSave">Save booking</button>
   </form>
@@ -261,7 +276,8 @@ import "../styles/site.css";
     const live = data.bookings.filter((b) => b.status === "confirmed");
     const a = live.reduce((n, b) => n + b.adults, 0), c = live.reduce((n, b) => n + b.children, 0);
     $("dayTitle").textContent = (date === ukToday() ? "Today · " : "") + fmt(date, { weekday: "long", day: "numeric", month: "long" });
-    $("dayTotals").textContent = data.slots.length ? (live.length ? `${plural(a + c, "guest", "guests")} (${people(a, c)}) in ${plural(live.length, "booking", "bookings")}` : "No bookings yet") : "Closed (opening hours)";
+    const here = live.filter((b) => b.arrived_at).reduce((n, b) => n + b.adults + b.children, 0);
+    $("dayTotals").innerHTML = data.slots.length ? (live.length ? `${plural(a + c, "guest", "guests")} (${people(a, c)})${here ? ` · <span class="ad-ok">✓ ${here} arrived</span>` : ""}` : "No bookings yet") + (data.maxGuests !== 15 ? ` · limit ${data.maxGuests} per hour` : "") : "Closed (opening hours)";
     const allBlocked = data.slots.length && data.slots.every((s) => s.cap === 0);
     $("closeDay").hidden = !data.slots.length || view === "month";
     $("closeDay").textContent = allBlocked ? "Reopen online booking for this day" : "Stop online booking for this day";
@@ -270,7 +286,8 @@ import "../styles/site.css";
       const list = live.filter((b) => b.hour === s.hour);
       const ad = list.reduce((n, b) => n + b.adults, 0), ki = list.reduce((n, b) => n + b.children, 0);
       const pct = Math.min(100, Math.round((s.booked / data.maxGuests) * 100));
-      const who = list.length ? list.slice(0, 3).map((b) => esc(b.name.split(" ")[0])).join(", ") + (list.length > 3 ? ` +${list.length - 3}` : "") : "";
+      const arrived = list.filter((b) => b.arrived_at).reduce((n, b) => n + b.adults + b.children, 0);
+      const who = list.length ? list.slice(0, 3).map((b) => esc(b.name.split(" ")[0])).join(", ") + (list.length > 3 ? ` +${list.length - 3}` : "") + (arrived ? ` · <span class="ad-ok">✓ ${arrived} in</span>` : "") : "";
       const isNow = date === ukToday() && s.hour === ukHour();
       const cls = (s.booked >= data.maxGuests ? " full" : pct >= 50 ? " busy" : "") + (isNow ? " now" : s.past ? " past" : "");
       return `<button type="button" class="ad-hour${cls}" data-hour="${s.hour}">
@@ -291,8 +308,13 @@ import "../styles/site.css";
     $("hsSub").textContent = `${fmt(date, { weekday: "long", day: "numeric", month: "long" })} · ${s.booked} of ${data.maxGuests} booked`;
     $("hsAdults").textContent = live.reduce((n, b) => n + b.adults, 0);
     $("hsKids").textContent = live.reduce((n, b) => n + b.children, 0);
-    $("hsList").innerHTML = all.length ? all.map((b) => `<button type="button" class="ad-bk${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
-        <span><b>${esc(b.name)}</b><br><span class="ad-muted">${people(b.adults, b.children)}</span></span>
+    const wk = live.find((b) => b.source === "walk-in" && b.name === "Walk-ins");
+    $("wkA").textContent = plural(wk ? wk.adults : 0, "adult", "adults");
+    $("wkC").textContent = plural(wk ? wk.children : 0, "child", "children");
+    $("hsErr").textContent = "";
+    const named = all.filter((b) => b !== wk);
+    $("hsList").innerHTML = named.length ? named.map((b) => `<button type="button" class="ad-bk${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
+        <span><b>${esc(b.name)}</b>${b.arrived_at ? ' <span class="ad-ok">✓ arrived</span>' : ""}<br><span class="ad-muted">${people(b.adults, b.children)}${b.notes ? " · 📝" : ""}</span></span>
         <span class="ad-muted">${SRC[b.source] || "Online"} ›</span></button>`).join("") : '<p class="ad-muted">No bookings at this time yet.</p>';
     $("hsPlaces").innerHTML = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "None (blocked)" : n}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
     if (!$("hourSheet").open) $("hourSheet").showModal();
@@ -315,16 +337,20 @@ import "../styles/site.css";
       ["Disclaimer", b.disclaimer_at ? (b.disclaimer_version === "signed in café" ? "Signed in the café" : "Agreed online") : "Not signed yet"],
       ["Reference", esc(b.id)],
     ];
-    $("bsRows").innerHTML = rows.filter((r) => r[1]).map((r) => `<div class="ad-line"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
+    rows.unshift(["Arrived", b.arrived_at ? "✓ " + new Date(b.arrived_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : ""]);
+    $("bsRows").innerHTML = (b.notes ? `<div class="ad-note">📝 ${esc(b.notes)}</div>` : "") + rows.filter((r) => r[1]).map((r) => `<div class="ad-line"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
     $("bsActions").innerHTML = b.status === "confirmed"
-      ? `${b.phone ? `<a class="btn ghost ad-small" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}<button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
+      ? `<button class="btn book ad-small" type="button" data-arrived="${esc(b.id)}" data-v="${b.arrived_at ? "" : "1"}">${b.arrived_at ? "Undo arrived" : "✓ Mark as arrived"}</button>
+         <button class="btn ghost ad-small" type="button" data-edit="${esc(b.id)}">Change</button>
+         ${b.phone ? `<a class="btn ghost ad-small" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}
+         <button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
     $("bkSheet").showModal();
   }
 
   // Add booking form
   const A = { aAdults: 2, aKids: 0 };
   function fillHours(selected) {
-    const rule = $("aDate").value === date ? data.hours : null;
+    const rule = $("aDate").value === date && data.hours.length ? data.hours : null;
     const hours = rule || [];
     if (!rule) { // a different day: fetch its opening times
       api("/api/admin/day?date=" + $("aDate").value).then((d) => setHours(d.hours, selected)).catch(() => setHours([], selected));
@@ -333,12 +359,18 @@ import "../styles/site.css";
   function setHours(hours, selected) {
     $("aHour").innerHTML = hours.length ? hours.map((h) => `<option value="${h}" ${h === selected ? "selected" : ""}>${pad(h)}</option>`).join("") : '<option value="">Closed this day</option>';
   }
-  function openAdd(hour) {
-    Object.assign(A, { aAdults: 2, aKids: 0 });
-    $("aAdults").textContent = 2; $("aKids").textContent = 0; $("aAgesWrap").hidden = true;
-    ["aName", "aPhone", "aEmail", "aAges"].forEach((id) => ($(id).value = ""));
+  let editing = null;
+  function openAdd(hour, b) {
+    editing = b || null;
+    Object.assign(A, { aAdults: b ? b.adults : 2, aKids: b ? b.children : 0 });
+    $("aAdults").textContent = A.aAdults; $("aKids").textContent = A.aKids; $("aAgesWrap").hidden = !A.aKids;
+    $("aName").value = b ? b.name : ""; $("aPhone").value = b ? b.phone || "" : ""; $("aEmail").value = b ? b.email || "" : "";
+    $("aAges").value = b ? b.child_ages || "" : ""; $("aNotes").value = b ? b.notes || "" : "";
     $("aDisc").checked = false; $("aErr").textContent = ""; $("aSource").value = "phone";
-    $("aDate").value = date; fillHours(hour ?? data.hours[0]);
+    $("aTitle").textContent = b ? "Change booking" : "Add a booking";
+    $("aSave").textContent = b ? "Save changes" : "Save booking";
+    $("aSourceWrap").hidden = !!b; $("aDiscWrap").hidden = !!b;
+    $("aDate").value = b ? b.date : date; fillHours(b ? b.hour : hour ?? data.hours[0]);
     $("addSheet").showModal(); setTimeout(() => $("aName").focus(), 50);
   }
   $("aDate").addEventListener("change", () => fillHours());
@@ -350,8 +382,10 @@ import "../styles/site.css";
   $("addForm").addEventListener("submit", async (e) => {
     e.preventDefault(); $("aErr").textContent = ""; $("aSave").disabled = true;
     try {
-      await api("/api/admin/add", { date: $("aDate").value, hour: +$("aHour").value, adults: A.aAdults, children: A.aKids, childAges: $("aAges").value,
-        name: $("aName").value, phone: $("aPhone").value, email: $("aEmail").value, source: $("aSource").value, disclaimer: $("aDisc").checked });
+      const body = { date: $("aDate").value, hour: +$("aHour").value, adults: A.aAdults, children: A.aKids, childAges: $("aAges").value,
+        name: $("aName").value, phone: $("aPhone").value, email: $("aEmail").value, notes: $("aNotes").value };
+      if (editing) await api("/api/admin/edit", { ...body, id: editing.id });
+      else await api("/api/admin/add", { ...body, source: $("aSource").value, disclaimer: $("aDisc").checked });
       $("addSheet").close(); date = $("aDate").value; await load();
     } catch (err) { if (err.message !== "login") $("aErr").textContent = err.message; }
     $("aSave").disabled = false;
@@ -362,6 +396,12 @@ import "../styles/site.css";
   $("pick").addEventListener("change", (e) => { if (e.target.value) { date = e.target.value; load(); } });
   $("hours").addEventListener("click", (e) => { const b = e.target.closest("[data-hour]"); if (b) showHour(+b.dataset.hour); });
   $("hsList").addEventListener("click", (e) => { const b = e.target.closest("[data-id]"); if (b) showBooking(b.dataset.id); });
+  document.querySelector(".ad-walk").addEventListener("click", async (e) => {
+    const w = e.target.closest("[data-walk]"); if (!w) return;
+    $("hsErr").textContent = "";
+    try { await api("/api/admin/walkin", { date, hour: openHour, kind: w.dataset.walk, delta: +w.dataset.d }); } catch (err) { if (err.message !== "login") $("hsErr").textContent = err.message; }
+    load();
+  });
   $("hsAdd").addEventListener("click", () => { $("hourSheet").close(); openAdd(openHour); });
   $("addBtn").addEventListener("click", () => openAdd());
   $("hsPlaces").addEventListener("change", async (e) => {
@@ -369,6 +409,10 @@ import "../styles/site.css";
     load();
   });
   $("bsActions").addEventListener("click", async (e) => {
+    const ar = e.target.closest("[data-arrived]");
+    if (ar) { try { await api("/api/admin/arrived", { id: ar.dataset.arrived, arrived: !!ar.dataset.v }); } catch (err) {} $("bkSheet").close(); load(); return; }
+    const ed = e.target.closest("[data-edit]");
+    if (ed) { const bk = data.bookings.find((x) => x.id === ed.dataset.edit); $("bkSheet").close(); $("hourSheet").close(); openAdd(bk.hour, bk); return; }
     const b = e.target.closest("[data-cancel]"); if (!b) return;
     if (!confirm("Cancel this booking? The places go back on sale. The record is kept.")) return;
     try { await api("/api/admin/cancel", { id: b.dataset.cancel }); } catch (err) { $("err").textContent = err.message; }
