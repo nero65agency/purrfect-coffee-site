@@ -13,129 +13,165 @@ import "../styles/site.css";
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
+<style is:global>
+  [hidden]{display:none !important}
   body{background:#F4E4D2;color:#3E2415}
-  .adm{max-width:720px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 14px 80px}
-  h1,h2,.big{font-family:var(--serif);font-weight:400;margin:0}
-  h1{font-size:36px}
-  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-  .card{background:#fff;border-radius:20px;padding:16px;margin-bottom:10px}
-  .muted{color:#7a6252}
-  .tiny{min-height:40px;padding:0 14px;font-size:14px}
+  .ad{max-width:720px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 14px 100px}
+  .ad h1,.ad h2,.ad-sheet h2,.ad-big{font-family:var(--serif);font-weight:400;margin:0}
+  .ad h1{font-size:36px}
+  .ad-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .ad-box{background:#fff;border-radius:20px;padding:16px;margin-bottom:10px}
+  .ad-muted{color:#7a6252}
+  .ad-small{min-height:42px;padding:0 16px;font-size:15px}
+  .ad-err{color:#9b3b2b;font-weight:700;margin:0 0 8px}
+  /* Day / Month switch */
+  .ad-tabs{display:inline-flex;background:#fff;border-radius:99px;padding:4px;margin-bottom:12px}
+  .ad-tabs button{border:0;background:none;font:inherit;font-weight:700;padding:8px 20px;border-radius:99px;cursor:pointer;color:inherit}
+  .ad-tabs button[aria-pressed=true]{background:#3E2415;color:#F4E4D2}
   /* day strip */
-  .strip{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:8px;scrollbar-width:none}
-  .strip button{flex-shrink:0;width:66px;padding:8px 4px;border-radius:16px;border:1.5px solid #e3cfba;background:#fff;font:inherit;line-height:1.15;cursor:pointer;color:inherit}
-  .strip button[aria-pressed=true]{background:#3E2415;color:#F4E4D2;border-color:#3E2415}
-  .strip b{display:block;font-family:var(--serif);font-weight:400;font-size:24px}
-  .strip i{display:block;font-style:normal;font-size:12px;font-weight:700;margin-top:2px}
+  .ad-strip{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin-bottom:6px;scrollbar-width:none}
+  .ad-strip::-webkit-scrollbar{display:none}
+  .ad-strip button{flex-shrink:0;width:68px;padding:9px 4px;border-radius:16px;border:0;background:#fff;font:inherit;font-size:14px;line-height:1.15;cursor:pointer;color:inherit;text-align:center}
+  .ad-strip button[aria-pressed=true]{background:#3E2415;color:#F4E4D2}
+  .ad-strip b{display:block;font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.1}
+  .ad-strip i{display:block;font-style:normal;font-size:12px;font-weight:700;margin-top:3px;opacity:.8}
+  /* month */
+  .ad-monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .ad-monthbar button{width:44px;height:44px;border-radius:50%;border:0;background:#fff;font-size:20px;cursor:pointer}
+  .ad-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+  .ad-grid .dow{text-align:center;font-size:12px;font-weight:700;color:#7a6252;padding-bottom:2px}
+  .ad-grid button{min-width:0;aspect-ratio:1/1.05;border:0;border-radius:14px;background:#fff;font:inherit;cursor:pointer;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px}
+  .ad-grid button b{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1}
+  .ad-grid button i{font-style:normal;font-size:12px;font-weight:700;min-height:14px}
+  .ad-grid button.out{opacity:.35}
+  .ad-grid button.today{outline:2.5px solid #3E2415;outline-offset:-2.5px}
+  .ad-grid button.l1{background:#f3e3d1}.ad-grid button.l2{background:#d9b48f}.ad-grid button.l3{background:#3E2415;color:#F4E4D2}
+  .ad-key{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:#7a6252;margin:10px 2px 0}
+  .ad-key span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px;background:var(--c)}
   /* day heading */
-  .dayhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:6px 2px 12px}
-  .dayhead .big{font-size:28px;line-height:1.1}
+  .ad-dayhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:8px 2px 12px;flex-wrap:wrap}
+  .ad-dayhead .ad-big{font-size:28px;line-height:1.1}
+  .ad-pick{min-height:42px;border:0;border-radius:12px;padding:0 10px;font:inherit;background:#fff;width:auto}
   /* hour rows */
-  .hour{width:100%;display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;text-align:left;background:#fff;border:0;border-radius:18px;padding:14px 16px;margin-bottom:8px;font:inherit;color:inherit;cursor:pointer}
-  .hour .t{font-family:var(--serif);font-size:24px}
-  .hour .n{font-size:20px;font-weight:700;white-space:nowrap}
-  .hour .n small{font-size:14px;font-weight:500;color:#7a6252}
-  .bar{height:8px;border-radius:99px;background:#efe2d3;overflow:hidden;margin-top:6px}
-  .bar i{display:block;height:100%;background:#3E2415;border-radius:99px}
-  .hour.full .bar i{background:#9b3b2b}
-  .hour.empty{opacity:.65}
-  .hour .who{font-size:14px;color:#7a6252}
-  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:#F4E4D2;margin-left:6px;vertical-align:middle}
+  .ad-hour{width:100%;display:grid;grid-template-columns:70px 1fr auto;gap:14px;align-items:center;text-align:left;background:#fff;border:0;border-radius:18px;padding:14px 16px;margin-bottom:8px;font:inherit;color:inherit;cursor:pointer}
+  .ad-hour .t{font-family:var(--serif);font-size:26px;line-height:1}
+  .ad-hour .t small{display:block;font-family:Jost,sans-serif;font-size:12px;font-weight:700;color:#2f7a3d;margin-top:4px}
+  .ad-hour .n{font-size:22px;font-weight:700;white-space:nowrap}
+  .ad-hour .n small{font-size:14px;font-weight:500;color:#7a6252}
+  .ad-hour .who{font-size:15px;line-height:1.3}
+  .ad-hour .names{font-size:13px;color:#7a6252}
+  .ad-meter{height:8px;border-radius:99px;background:#efe2d3;overflow:hidden;margin:6px 0 4px}
+  .ad-meter i{display:block;height:100%;border-radius:99px;background:#d9b48f}
+  .ad-hour.busy .ad-meter i{background:#3E2415}
+  .ad-hour.full .ad-meter i{background:#9b3b2b}
+  .ad-hour.full .n{color:#9b3b2b}
+  .ad-hour.past{opacity:.5}
+  .ad-hour.now{outline:2.5px solid #3E2415;outline-offset:-2.5px}
+  .ad-flag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:#F4E4D2;margin-left:6px;vertical-align:1px}
   /* sheets */
-  dialog.sheet{border:0;border-radius:24px;padding:0;width:min(560px,94vw);max-height:90vh;color:inherit}
-  dialog.sheet::backdrop{background:rgba(30,15,8,.55)}
-  .sh{padding:20px}
-  .shtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
-  .x{width:40px;height:40px;border-radius:50%;border:0;background:#F4E4D2;font-size:20px;cursor:pointer;flex-shrink:0}
-  .row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #efe2d3}
-  .row span:first-child{color:#7a6252}
-  .row b{text-align:right}
-  .counts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
-  .counts div{background:#F4E4D2;border-radius:16px;padding:12px;text-align:center}
-  .counts b{display:block;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1}
-  .bkrow{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:#faf3eb;border:0;border-radius:14px;padding:12px 14px;margin-top:8px;font:inherit;color:inherit;cursor:pointer}
-  .bkrow.cx{opacity:.45;text-decoration:line-through}
-  .f{display:grid;gap:12px}
-  .f label{display:grid;gap:4px;font-weight:600;font-size:15px}
-  .f input,.f select{min-height:46px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 12px;font:inherit;background:#fff}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .stepper{display:flex;align-items:center;gap:8px}
-  .stepper button{width:46px;height:46px;border-radius:50%;border:1.5px solid #e3cfba;background:#fff;font-size:22px;cursor:pointer}
-  .stepper output{min-width:34px;text-align:center;font-size:22px;font-weight:700}
-  .err{color:#9b3b2b;font-weight:700;margin:0}
-  .fab{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:5;box-shadow:0 8px 24px rgba(62,36,21,.3)}
+  dialog.ad-sheet{border:0;border-radius:24px;padding:0;width:min(560px,94vw);max-height:90vh;color:inherit;background:#fff}
+  dialog.ad-sheet::backdrop{background:rgba(30,15,8,.55)}
+  .ad-sh{padding:20px}
+  .ad-shtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+  .ad-x{width:42px;height:42px;border-radius:50%;border:0;background:#F4E4D2;font-size:22px;cursor:pointer;flex-shrink:0;color:inherit}
+  .ad-line{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #efe2d3}
+  .ad-line span:first-child{color:#7a6252}
+  .ad-line b{text-align:right}
+  .ad-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
+  .ad-counts div{background:#F4E4D2;border-radius:16px;padding:12px;text-align:center}
+  .ad-counts b{display:block;font-family:var(--serif);font-weight:400;font-size:42px;line-height:1}
+  .ad-bk{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:#faf3eb;border:0;border-radius:14px;padding:12px 14px;margin-top:8px;font:inherit;color:inherit;cursor:pointer}
+  .ad-bk.cx{opacity:.45;text-decoration:line-through}
+  .ad-form{display:grid;gap:12px}
+  .ad-form label{display:grid;gap:4px;font-weight:600;font-size:15px}
+  .ad-form input,.ad-form select,.ad-sh select{min-height:46px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 12px;font:inherit;background:#fff;width:100%}
+  .ad-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ad-step{display:flex;align-items:center;gap:8px}
+  .ad-step button{width:46px;height:46px;border-radius:50%;border:1.5px solid #e3cfba;background:#fff;font-size:22px;cursor:pointer;color:inherit}
+  .ad-step output{min-width:34px;text-align:center;font-size:22px;font-weight:700}
+  .ad-fab{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:5;box-shadow:0 8px 24px rgba(62,36,21,.3)}
 </style>
 </head>
 <body>
-<main class="adm">
-  <div class="top"><h1>Bookings</h1><a href="/" class="muted">View website</a></div>
+<main class="ad">
+  <div class="ad-top"><h1>Bookings</h1><a href="/" class="ad-muted">View website</a></div>
 
-  <section id="login" class="card" hidden>
+  <section id="login" class="ad-box" hidden>
     <p style="margin-top:0">Enter the bookings password.</p>
     <form id="loginForm" style="display:flex;gap:10px;flex-wrap:wrap">
       <input type="password" id="pw" autocomplete="current-password" required style="flex:1;min-width:200px;min-height:46px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 12px;font:inherit">
       <button class="btn book" type="submit">Log in</button>
     </form>
-    <p class="err" id="loginErr"></p>
+    <p class="ad-err" id="loginErr"></p>
   </section>
 
   <section id="app" hidden>
-    <div class="strip" id="strip"></div>
-    <div class="dayhead">
-      <div><div class="big" id="dayTitle"></div><div class="muted" id="dayTotals"></div></div>
+    <div class="ad-tabs" role="group" aria-label="View"><button type="button" id="tabDay" aria-pressed="true">Day</button><button type="button" id="tabMonth" aria-pressed="false">Month</button></div>
+    <div id="monthView" hidden>
+      <div class="ad-box">
+        <div class="ad-monthbar"><button type="button" id="mPrev" aria-label="Previous month">‹</button><strong class="ad-big" id="mTitle" style="font-size:26px"></strong><button type="button" id="mNext" aria-label="Next month">›</button></div>
+        <div class="ad-grid" id="mGrid"></div>
+        <div class="ad-key"><span style="--c:#f3e3d1">Quiet</span><span style="--c:#d9b48f">Busy</span><span style="--c:#3E2415">Very busy</span></div>
+      </div>
+      <p class="ad-muted" style="text-align:center">Tap a day to see its bookings.</p>
+    </div>
+    <div id="dayView">
+    <div class="ad-strip" id="strip"></div>
+    <div class="ad-dayhead">
+      <div><div class="ad-big" id="dayTitle"></div><div class="ad-muted" id="dayTotals"></div></div>
       <input type="date" id="pick" aria-label="Go to a date" style="min-height:40px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 8px;font:inherit;background:#fff">
     </div>
-    <p class="err" id="err"></p>
+    <p class="ad-err" id="err"></p>
     <div id="hours"></div>
-    <div class="card" style="margin-top:22px;display:grid;gap:10px">
-      <button class="btn ghost tiny" id="closeDay" type="button"></button>
-      <a class="btn ghost tiny" href="/api/admin/export">Download all bookings (spreadsheet)</a>
-      <button class="btn ghost tiny" id="logout" type="button">Log out</button>
+    </div>
+    <div class="ad-box" style="margin-top:22px;display:grid;gap:10px">
+      <button class="btn ghost ad-small" id="closeDay" type="button"></button>
+      <a class="btn ghost ad-small" href="/api/admin/export">Download all bookings (spreadsheet)</a>
+      <button class="btn ghost ad-small" id="logout" type="button">Log out</button>
     </div>
   </section>
-  <button class="btn book fab" id="addBtn" type="button" hidden>+ Add booking</button>
+  <button class="btn book ad-fab" id="addBtn" type="button" hidden>+ Add booking</button>
 </main>
 
 <!-- One hour: who's booked -->
-<dialog class="sheet" id="hourSheet"><div class="sh">
-  <div class="shtop"><div><h2 id="hsTitle" style="font-size:30px"></h2><div class="muted" id="hsSub"></div></div><button class="x" data-close aria-label="Close">×</button></div>
-  <div class="counts"><div><b id="hsAdults">0</b>adults</div><div><b id="hsKids">0</b>children</div></div>
+<dialog class="ad-sheet" id="hourSheet"><div class="ad-sh">
+  <div class="ad-shtop"><div><h2 id="hsTitle" style="font-size:30px"></h2><div class="ad-muted" id="hsSub"></div></div><button class="ad-x" data-close aria-label="Close">×</button></div>
+  <div class="ad-counts"><div><b id="hsAdults">0</b>adults</div><div><b id="hsKids">0</b>children</div></div>
   <div id="hsList"></div>
   <button class="btn book" type="button" id="hsAdd" style="width:100%;margin-top:14px">+ Add booking at this time</button>
-  <label class="muted" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px">Places available online
+  <label class="ad-muted" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px">Places available online
     <select id="hsPlaces" style="min-height:44px;border:1.5px solid #e3cfba;border-radius:12px;padding:0 10px;font:inherit"></select></label>
 </div></dialog>
 
 <!-- One booking -->
-<dialog class="sheet" id="bkSheet"><div class="sh">
-  <div class="shtop"><div><h2 id="bsName" style="font-size:30px"></h2><div class="muted" id="bsWhen"></div></div><button class="x" data-close aria-label="Close">×</button></div>
-  <div class="counts"><div><b id="bsAdults">0</b>adults</div><div><b id="bsKids">0</b>children</div></div>
+<dialog class="ad-sheet" id="bkSheet"><div class="ad-sh">
+  <div class="ad-shtop"><div><h2 id="bsName" style="font-size:30px"></h2><div class="ad-muted" id="bsWhen"></div></div><button class="ad-x" data-close aria-label="Close">×</button></div>
+  <div class="ad-counts"><div><b id="bsAdults">0</b>adults</div><div><b id="bsKids">0</b>children</div></div>
   <div id="bsRows"></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px" id="bsActions"></div>
 </div></dialog>
 
 <!-- Add a booking -->
-<dialog class="sheet" id="addSheet"><div class="sh">
-  <div class="shtop"><h2 style="font-size:30px">Add a booking</h2><button class="x" data-close aria-label="Close">×</button></div>
-  <form class="f" id="addForm">
-    <div class="two">
+<dialog class="ad-sheet" id="addSheet"><div class="ad-sh">
+  <div class="ad-shtop"><h2 style="font-size:30px">Add a booking</h2><button class="ad-x" data-close aria-label="Close">×</button></div>
+  <form class="ad-form" id="addForm">
+    <div class="ad-two">
       <label>Day<input type="date" id="aDate" required></label>
       <label>Time<select id="aHour" required></select></label>
     </div>
-    <div class="two">
-      <label>Adults<div class="stepper"><button type="button" data-step="aAdults" data-d="-1">−</button><output id="aAdults">2</output><button type="button" data-step="aAdults" data-d="1">+</button></div></label>
-      <label>Children<div class="stepper"><button type="button" data-step="aKids" data-d="-1">−</button><output id="aKids">0</output><button type="button" data-step="aKids" data-d="1">+</button></div></label>
+    <div class="ad-two">
+      <label>Adults<div class="ad-step"><button type="button" data-step="aAdults" data-d="-1">−</button><output id="aAdults">2</output><button type="button" data-step="aAdults" data-d="1">+</button></div></label>
+      <label>Children<div class="ad-step"><button type="button" data-step="aKids" data-d="-1">−</button><output id="aKids">0</output><button type="button" data-step="aKids" data-d="1">+</button></div></label>
     </div>
     <label id="aAgesWrap" hidden>Children's ages<input type="text" id="aAges" placeholder="e.g. 6 and 9"></label>
     <label>Name<input type="text" id="aName" required autocomplete="off"></label>
-    <div class="two">
+    <div class="ad-two">
       <label>Phone<input type="tel" id="aPhone"></label>
       <label>Booked by<select id="aSource"><option value="phone">Phone</option><option value="walk-in">Walk-in</option><option value="other">Other</option></select></label>
     </div>
     <label>Email (optional)<input type="email" id="aEmail"></label>
     <label style="display:flex;gap:10px;align-items:center;font-weight:500"><input type="checkbox" id="aDisc" style="min-height:auto;width:22px;height:22px"> Disclaimer signed in the café</label>
-    <p class="err" id="aErr"></p>
+    <p class="ad-err" id="aErr"></p>
     <button class="btn book" type="submit" id="aSave">Save booking</button>
   </form>
 </div></dialog>
@@ -151,7 +187,40 @@ import "../styles/site.css";
   const people = (a, c) => plural(a, "adult", "adults") + (c ? " · " + plural(c, "child", "children") : "");
   const SRC = { online: "Online", phone: "Phone", "walk-in": "Walk-in", other: "Other" };
 
-  let date = ukToday(), data = null, openHour = null;
+  const ukHour = () => Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", hourCycle: "h23" }).format(new Date()));
+  let date = ukToday(), data = null, openHour = null, view = "day", month = ukToday().slice(0, 7);
+
+  function setView(v) {
+    view = v;
+    $("tabDay").setAttribute("aria-pressed", v === "day"); $("tabMonth").setAttribute("aria-pressed", v === "month");
+    $("dayView").hidden = v !== "day"; $("monthView").hidden = v !== "month";
+    $("closeDay").hidden = v === "month";
+    v === "month" ? loadMonth() : load();
+  }
+  $("tabDay").addEventListener("click", () => setView("day"));
+  $("tabMonth").addEventListener("click", () => { month = date.slice(0, 7); setView("month"); });
+  $("mPrev").addEventListener("click", () => { month = shiftMonth(month, -1); loadMonth(); });
+  $("mNext").addEventListener("click", () => { month = shiftMonth(month, 1); loadMonth(); });
+  function shiftMonth(m, n) { const [y, mo] = m.split("-").map(Number); const d = new Date(Date.UTC(y, mo - 1 + n, 1)); return d.toISOString().slice(0, 7); }
+
+  async function loadMonth() {
+    const first = month + "-01";
+    const lead = (new Date(first + "T12:00:00Z").getUTCDay() + 6) % 7; // weeks start on Monday
+    const start = addDays(first, -lead);
+    let totals = {};
+    try { totals = await api(`/api/admin/summary?from=${start}&days=42`); } catch (e) { if (e.message === "login") return; }
+    $("app").hidden = false; $("addBtn").hidden = false;
+    $("mTitle").textContent = new Date(first + "T12:00:00").toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+    const t = ukToday();
+    let h = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => `<div class="dow">${d}</div>`).join("");
+    for (let i = 0; i < 42; i++) {
+      const d = addDays(start, i), n = totals[d] || 0;
+      const lvl = n === 0 ? "" : n < 20 ? " l1" : n < 50 ? " l2" : " l3";
+      h += `<button type="button" data-date="${d}" class="${d.slice(0, 7) !== month ? "out" : ""}${d === t ? " today" : ""}${lvl}"><b>${Number(d.slice(8))}</b><i>${n || ""}</i></button>`;
+    }
+    $("mGrid").innerHTML = h;
+  }
+  $("mGrid").addEventListener("click", (e) => { const b = e.target.closest("[data-date]"); if (b) { date = b.dataset.date; setView("day"); } });
 
   async function api(path, body) {
     const r = await fetch(path, body === undefined ? { cache: "no-store" } : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
@@ -184,6 +253,7 @@ import "../styles/site.css";
   }
 
   async function load() {
+    if (view === "month") return loadMonth();
     $("err").textContent = "";
     try { data = await api("/api/admin/day?date=" + date); } catch (e) { if (e.message !== "login") $("err").textContent = e.message; return; }
     $("app").hidden = false; $("addBtn").hidden = false; $("pick").value = date;
@@ -193,7 +263,7 @@ import "../styles/site.css";
     $("dayTitle").textContent = (date === ukToday() ? "Today · " : "") + fmt(date, { weekday: "long", day: "numeric", month: "long" });
     $("dayTotals").textContent = data.slots.length ? (live.length ? `${plural(a + c, "guest", "guests")} (${people(a, c)}) in ${plural(live.length, "booking", "bookings")}` : "No bookings yet") : "Closed (opening hours)";
     const allBlocked = data.slots.length && data.slots.every((s) => s.cap === 0);
-    $("closeDay").hidden = !data.slots.length;
+    $("closeDay").hidden = !data.slots.length || view === "month";
     $("closeDay").textContent = allBlocked ? "Reopen online booking for this day" : "Stop online booking for this day";
     $("closeDay").dataset.closed = allBlocked ? "1" : "";
     $("hours").innerHTML = data.slots.map((s) => {
@@ -201,10 +271,12 @@ import "../styles/site.css";
       const ad = list.reduce((n, b) => n + b.adults, 0), ki = list.reduce((n, b) => n + b.children, 0);
       const pct = Math.min(100, Math.round((s.booked / data.maxGuests) * 100));
       const who = list.length ? list.slice(0, 3).map((b) => esc(b.name.split(" ")[0])).join(", ") + (list.length > 3 ? ` +${list.length - 3}` : "") : "";
-      return `<button type="button" class="hour${s.booked >= data.maxGuests ? " full" : ""}${s.booked ? "" : " empty"}" data-hour="${s.hour}">
-        <span class="t">${pad(s.hour)}</span>
-        <span><span class="who">${s.booked ? people(ad, ki) : "No bookings"}${s.cap === 0 ? '<span class="tag">Online blocked</span>' : s.changed ? `<span class="tag">Online: ${s.cap}</span>` : ""}</span>
-          <div class="bar"><i style="width:${pct}%"></i></div>${who ? `<span class="who">${who}</span>` : ""}</span>
+      const isNow = date === ukToday() && s.hour === ukHour();
+      const cls = (s.booked >= data.maxGuests ? " full" : pct >= 50 ? " busy" : "") + (isNow ? " now" : s.past ? " past" : "");
+      return `<button type="button" class="ad-hour${cls}" data-hour="${s.hour}">
+        <span class="t">${pad(s.hour)}${isNow ? "<small>Now</small>" : ""}</span>
+        <span><span class="who">${s.booked ? "<b>" + people(ad, ki) + "</b>" : "No bookings"}${s.cap === 0 ? '<span class="ad-flag">Online blocked</span>' : s.changed ? `<span class="ad-flag">Online: ${s.cap}</span>` : ""}</span>
+          <div class="ad-meter"><i style="width:${pct}%"></i></div>${who ? `<span class="names">${who}</span>` : ""}</span>
         <span class="n">${s.booked}<small> / ${data.maxGuests}</small></span></button>`;
     }).join("");
     if (openHour !== null && $("hourSheet").open) showHour(openHour);
@@ -219,9 +291,9 @@ import "../styles/site.css";
     $("hsSub").textContent = `${fmt(date, { weekday: "long", day: "numeric", month: "long" })} · ${s.booked} of ${data.maxGuests} booked`;
     $("hsAdults").textContent = live.reduce((n, b) => n + b.adults, 0);
     $("hsKids").textContent = live.reduce((n, b) => n + b.children, 0);
-    $("hsList").innerHTML = all.length ? all.map((b) => `<button type="button" class="bkrow${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
-        <span><b>${esc(b.name)}</b><br><span class="muted">${people(b.adults, b.children)}</span></span>
-        <span class="muted">${SRC[b.source] || "Online"} ›</span></button>`).join("") : '<p class="muted">No bookings at this time yet.</p>';
+    $("hsList").innerHTML = all.length ? all.map((b) => `<button type="button" class="ad-bk${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
+        <span><b>${esc(b.name)}</b><br><span class="ad-muted">${people(b.adults, b.children)}</span></span>
+        <span class="ad-muted">${SRC[b.source] || "Online"} ›</span></button>`).join("") : '<p class="ad-muted">No bookings at this time yet.</p>';
     $("hsPlaces").innerHTML = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "None (blocked)" : n}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
     if (!$("hourSheet").open) $("hourSheet").showModal();
   }
@@ -243,9 +315,9 @@ import "../styles/site.css";
       ["Disclaimer", b.disclaimer_at ? (b.disclaimer_version === "signed in café" ? "Signed in the café" : "Agreed online") : "Not signed yet"],
       ["Reference", esc(b.id)],
     ];
-    $("bsRows").innerHTML = rows.filter((r) => r[1]).map((r) => `<div class="row"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
+    $("bsRows").innerHTML = rows.filter((r) => r[1]).map((r) => `<div class="ad-line"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
     $("bsActions").innerHTML = b.status === "confirmed"
-      ? `${b.phone ? `<a class="btn ghost tiny" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}<button class="btn ghost tiny" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
+      ? `${b.phone ? `<a class="btn ghost ad-small" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}<button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
     $("bkSheet").showModal();
   }
 
@@ -308,7 +380,7 @@ import "../styles/site.css";
     try { await api("/api/admin/close-day", { date, closed: closing }); } catch (err) { $("err").textContent = err.message; }
     load();
   });
-  document.querySelectorAll("dialog.sheet").forEach((d) => {
+  document.querySelectorAll("dialog.ad-sheet").forEach((d) => {
     d.addEventListener("click", (e) => { if (e.target === d || e.target.closest("[data-close]")) d.close(); });
     d.addEventListener("close", () => { if (d.id === "hourSheet") openHour = null; });
   });
