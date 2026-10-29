@@ -16,7 +16,7 @@
     "maxGuests": 15,
     "maxChildren": 4,
     "onlineBooking": false,
-    "payment": "Pay online when booking",
+    "payment": "Pay on arrival",
     "minAge": 5,
     "rescheduling": ""
   },
