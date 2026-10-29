@@ -15,7 +15,7 @@
   "rules": {
     "maxGuests": 15,
     "maxChildren": 4,
-    "onlineBooking": true,
+    "onlineBooking": false,
     "payment": "Pay online when booking",
     "minAge": 5,
     "rescheduling": ""
