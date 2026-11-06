@@ -17,9 +17,9 @@
     }
   ],
   "about": {
-    "image": "/uploads/site/interior3.jpg",
-    "alt": "Cats napping around the café while a visitor reads with a cat on her lap",
-    "position": "40% 50%"
+    "image": "/uploads/real/cat-tree-play.jpg",
+    "alt": "A black cat playing with a feather toy by the cat tree in the café",
+    "position": "center 80%"
   },
   "owner": {
     "image": "",
@@ -32,29 +32,29 @@
   },
   "gallery": [
     {
-      "image": "/uploads/site/interior2.jpg",
-      "alt": "The café with cats napping on chairs and the window sill",
-      "position": "60% 50%"
+      "image": "/uploads/real/cat-tree-play.jpg",
+      "alt": "A black cat playing with a feather toy by the cat tree",
+      "position": "center 78%"
     },
     {
-      "image": "/uploads/site/cake-counter.jpg",
-      "alt": "A cat watching over the cake counter",
-      "position": "center 30%"
+      "image": "/uploads/real/spider-bed.jpg",
+      "alt": "A black and white cat peeking out of a spider-shaped cat bed",
+      "position": "center 45%"
     },
     {
-      "image": "/uploads/cats/nala.jpg",
-      "alt": "Nala relaxing",
-      "position": ""
+      "image": "/uploads/real/grey-kitten-box.jpg",
+      "alt": "A grey and white kitten sitting in a cardboard box",
+      "position": "center 40%"
     },
     {
-      "image": "/uploads/site/friends.jpg",
-      "alt": "Friends chatting over coffee with a cat asleep on a chair",
-      "position": "center 70%"
+      "image": "/uploads/real/kitten-toy.jpg",
+      "alt": "A grey and white kitten playing with a ball toy",
+      "position": "center 55%"
     },
     {
-      "image": "/uploads/cats/star.jpg",
-      "alt": "Star peeking out of her cat bed",
-      "position": ""
+      "image": "/uploads/real/keyring-tree.jpg",
+      "alt": "Purr-fect Coffee keyrings and pens for sale",
+      "position": "center 40%"
     }
   ],
   "menu": [
