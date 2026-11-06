@@ -13,7 +13,7 @@
     "sunday": "£6"
   },
   "rules": {
-    "maxGuests": 15,
+    "maxGuests": 12,
     "maxChildren": 4,
     "onlineBooking": true,
     "payment": "Pay on arrival",
