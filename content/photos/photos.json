@@ -17,12 +17,12 @@
     }
   ],
   "about": {
-    "image": "/uploads/real/cat-tree-play.jpg",
-    "alt": "A black cat playing with a feather toy by the cat tree in the café",
-    "position": "center 80%"
+    "image": "/uploads/real/room-cats.jpg",
+    "alt": "Three cats in the café: one on the counter, one on the cat tree and a kitten reaching up to play",
+    "position": "center 60%"
   },
   "owner": {
-    "image": "",
+    "image": "/uploads/real/louise.jpg",
     "quote": "Where coffee, cats and kindness come together.",
     "name": "Louise, owner"
   },
@@ -37,14 +37,14 @@
       "position": "center 78%"
     },
     {
+      "image": "/uploads/real/tabby.jpg",
+      "alt": "A tabby cat with a pink collar looking at the camera",
+      "position": "center 35%"
+    },
+    {
       "image": "/uploads/real/spider-bed.jpg",
       "alt": "A black and white cat peeking out of a spider-shaped cat bed",
       "position": "center 45%"
-    },
-    {
-      "image": "/uploads/real/grey-kitten-box.jpg",
-      "alt": "A grey and white kitten sitting in a cardboard box",
-      "position": "center 40%"
     },
     {
       "image": "/uploads/real/kitten-toy.jpg",
@@ -79,8 +79,8 @@
       "caption": "Cheesecakes"
     },
     {
-      "image": "/uploads/menu/hotchoc.jpg",
-      "caption": "Hot chocolate"
+      "image": "/uploads/real/tea-cat.jpg",
+      "caption": "Twinings teas"
     }
   ],
   "events": {
