@@ -90,7 +90,7 @@ function render(){
  const okDetails=name.length>1&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
  const bad=!sl||cap||!okDetails||!S.agree||S.busy;const pay=$('pay');pay.disabled=!!bad;
  pay.textContent=S.busy?'Booking…':DATA.payOnArrival?'Book my visit':'Pay £'+ppl*unit+' and book';
- $('hint').textContent=!sl?'Choose a time to continue.':cap?'Change the time or number of guests.':!okDetails?'Add your name and email to continue.':!S.agree?'Tick to agree to the disclaimer to continue.':(DATA.payOnArrival?'You pay when you arrive, by cash or card.':'Secure card payment.');
+ $('hint').textContent=!sl?'Choose a time to continue.':cap?'Change the time or number of guests.':!okDetails?'Add your name and email to continue.':!S.agree?'Tick to agree to the disclaimer to continue.':(DATA.payOnArrival?'You pay when you arrive, by cash or card.':'You\'ll pay securely with SumUp. Your places are held for 15 minutes.');
  S._line=$('sGuests').textContent+' on '+$('sDay').textContent+', '+$('sTime').textContent;
 }
 dlg.addEventListener('click',e=>{const t=e.target.closest('button');if(!t||!AV||AV.error)return;
@@ -106,7 +106,8 @@ $('pay').addEventListener('click',async()=>{
  try{res=await fetch('/api/book',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({date:day.date,hour:S.slot,adults:S.adults,children:S.children,childAges:$('bkAges').value,name:$('bkName').value,email:$('bkEmail').value,phone:$('bkPhone').value,access:acc.join(', '),agree:S.agree})});data=await res.json()}catch(e){data={error:'Something went wrong. Please check your connection and try again.'}}
  S.busy=false;
  if(!res||!res.ok){S.error=data.error||'Something went wrong. Please try again.';await loadAvailability();render();if(LIVE)renderChips();return}
- $('doneLine').innerHTML=S._line+'.<br>Your booking reference is <b>'+data.ref+'</b>. Please give your name or this reference when you arrive. It\'s worth taking a screenshot of this page.';
+ if(data.payUrl){S.busy=true;$('pay').disabled=true;$('pay').textContent='Taking you to secure payment…';$('hint').textContent='Your places are held for 15 minutes while you pay.';window.location.href=data.payUrl;return}
+ $('doneLine').innerHTML=S._line+'.<br>Your booking reference is <b>'+data.ref+'</b>. Please give your name or this reference when you arrive'+(data.payOnArrival?', and pay when you arrive':'')+'. It\'s worth taking a screenshot of this page.';
  $('bkForm').style.display='none';$('bkDone').style.display='flex';renderChips();
 });
 $('again').addEventListener('click',()=>{Object.assign(S,{day:0,slot:null,adults:2,children:0,agree:false,error:''});$('agree').checked=false;$('bkForm').style.display='';$('bkDone').style.display='none';loadAvailability().then(render)});

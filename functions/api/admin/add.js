@@ -1,6 +1,6 @@
 // POST /api/admin/add  ->  Louise adds a booking by hand (phone, walk-in).
 // Counts against the room limit (not the online places), so walk-ins fit even when online is blocked.
-import { dayRule, isDate, makeRef, json, rules, londonNow, addDays } from "../../../lib-api/booking.js";
+import { dayRule, isDate, makeRef, json, rules, londonNow, addDays, ACTIVE } from "../../../lib-api/booking.js";
 
 const clean = (v, max) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, max);
 
@@ -24,8 +24,8 @@ export async function onRequestPost({ request, env }) {
     `INSERT INTO bookings (id, date, hour, adults, children, child_ages, name, email, phone, access,
        price_each, total, payment, status, disclaimer_at, disclaimer_version, created_at, source, notes, arrived_at)
      SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'on_arrival', 'confirmed', ?13, ?14, ?15, ?16, ?19, ?20
-     WHERE (SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?4 + ?5 <= ?17
-       AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND status = 'confirmed') + ?5 <= ?18`
+     WHERE (SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND ${ACTIVE}) + ?4 + ?5 <= ?17
+       AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?2 AND hour = ?3 AND ${ACTIVE}) + ?5 <= ?18`
   ).bind(ref, date, hour, adults, children, clean(b.childAges, 60), name, clean(b.email, 120), clean(b.phone, 30), clean(b.access, 120),
          rule.price, rule.price * (adults + children), b.disclaimer ? now : "", b.disclaimer ? "signed in café" : "", now, source,
          rule.cap, rules.maxChildren, clean(b.notes, 300), source === "walk-in" ? now : null).run();

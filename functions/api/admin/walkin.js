@@ -1,6 +1,6 @@
 // POST /api/admin/walkin {date, hour, kind: "adult"|"child", delta: 1|-1}
 // Keeps one "Walk-ins" entry per hour and counts people up or down, so walk-ins use up places too.
-import { dayRule, isDate, makeRef, json, rules } from "../../../lib-api/booking.js";
+import { dayRule, isDate, makeRef, json, rules, ACTIVE } from "../../../lib-api/booking.js";
 
 const NAME = "Walk-ins";
 
@@ -20,8 +20,8 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: true });
   }
 
-  const room = `(SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?1 AND hour = ?2 AND status = 'confirmed') + 1 <= ?3
-     AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?1 AND hour = ?2 AND status = 'confirmed') + ?5 <= ?4`;
+  const room = `(SELECT COALESCE(SUM(adults + children), 0) FROM bookings WHERE date = ?1 AND hour = ?2 AND ${ACTIVE}) + 1 <= ?3
+     AND (SELECT COALESCE(SUM(children), 0) FROM bookings WHERE date = ?1 AND hour = ?2 AND ${ACTIVE}) + ?5 <= ?4`;
   let res;
   if (row) {
     res = await env.DB.prepare(`UPDATE bookings SET adults = adults + ?6, children = children + ?5, total = price_each * (adults + children + 1) WHERE id = ?7 AND ${room}`)

@@ -273,7 +273,7 @@ import "../styles/site.css";
     try { data = await api("/api/admin/day?date=" + date); } catch (e) { if (e.message !== "login") $("err").textContent = e.message; return; }
     $("app").hidden = false; $("addBtn").hidden = false; $("pick").value = date;
     strip();
-    const live = data.bookings.filter((b) => b.status === "confirmed");
+    const live = data.bookings.filter((b) => b.status === "confirmed" || b.status === "pending");
     const a = live.reduce((n, b) => n + b.adults, 0), c = live.reduce((n, b) => n + b.children, 0);
     $("dayTitle").textContent = (date === ukToday() ? "Today · " : "") + fmt(date, { weekday: "long", day: "numeric", month: "long" });
     const here = live.filter((b) => b.arrived_at).reduce((n, b) => n + b.adults + b.children, 0);
@@ -292,7 +292,7 @@ import "../styles/site.css";
       const cls = (s.booked >= data.maxGuests ? " full" : pct >= 50 ? " busy" : "") + (isNow ? " now" : s.past ? " past" : "");
       return `<button type="button" class="ad-hour${cls}" data-hour="${s.hour}">
         <span class="t">${pad(s.hour)}${isNow ? "<small>Now</small>" : ""}</span>
-        <span><span class="who">${s.booked ? "<b>" + people(ad, ki) + "</b>" : "No bookings"}${s.cap === 0 ? '<span class="ad-flag">Online blocked</span>' : s.changed ? `<span class="ad-flag">Online: ${s.cap}</span>` : ""}</span>
+        <span><span class="who">${s.booked ? "<b>" + people(ad, ki) + "</b>" : "No bookings"}${s.outside ? '<span class="ad-flag" style="background:#fbe3dc">Outside opening hours</span>' : s.cap === 0 ? '<span class="ad-flag">Online blocked</span>' : s.changed ? `<span class="ad-flag">Online: ${s.cap}</span>` : ""}</span>
           <div class="ad-meter"><i style="width:${pct}%"></i></div>${who ? `<span class="names">${who}</span>` : ""}</span>
         <span class="n">${s.booked}<small> / ${data.maxGuests}</small></span></button>`;
     }).join("");
@@ -303,7 +303,7 @@ import "../styles/site.css";
     openHour = hour;
     const s = data.slots.find((x) => x.hour === hour); if (!s) return;
     const all = data.bookings.filter((b) => b.hour === hour);
-    const live = all.filter((b) => b.status === "confirmed");
+    const live = all.filter((b) => b.status === "confirmed" || b.status === "pending");
     $("hsTitle").textContent = `${pad(hour)} – ${pad(hour + 1)}`;
     $("hsSub").textContent = `${fmt(date, { weekday: "long", day: "numeric", month: "long" })} · ${s.booked} of ${data.maxGuests} booked`;
     $("hsAdults").textContent = live.reduce((n, b) => n + b.adults, 0);
@@ -314,7 +314,7 @@ import "../styles/site.css";
     $("hsErr").textContent = "";
     const named = all.filter((b) => b !== wk);
     $("hsList").innerHTML = named.length ? named.map((b) => `<button type="button" class="ad-bk${b.status === "cancelled" ? " cx" : ""}" data-id="${esc(b.id)}">
-        <span><b>${esc(b.name)}</b>${b.arrived_at ? ' <span class="ad-ok">✓ arrived</span>' : ""}<br><span class="ad-muted">${people(b.adults, b.children)}${b.notes ? " · 📝" : ""}</span></span>
+        <span><b>${esc(b.name)}</b>${b.arrived_at ? ' <span class="ad-ok">✓ arrived</span>' : ""}${b.status === "pending" ? ' <span class="ad-flag" style="background:#fff3cd">⏳ paying now</span>' : b.paid_at ? ' <span class="ad-flag" style="background:#e6f1e8">£ paid</span>' : ""}<br><span class="ad-muted">${people(b.adults, b.children)}${b.notes ? " · 📝" : ""}</span></span>
         <span class="ad-muted">${SRC[b.source] || "Online"} ›</span></button>`).join("") : '<p class="ad-muted">No bookings at this time yet.</p>';
     $("hsPlaces").innerHTML = Array.from({ length: data.maxGuests + 1 }, (_, n) => `<option value="${n}" ${n === s.cap ? "selected" : ""}>${n === 0 ? "None (blocked)" : n}${n === data.maxGuests ? " (normal)" : ""}</option>`).join("");
     if (!$("hourSheet").open) $("hourSheet").showModal();
@@ -327,10 +327,10 @@ import "../styles/site.css";
     $("bsWhen").textContent = `${fmt(b.date, { weekday: "long", day: "numeric", month: "long" })} · ${pad(b.hour)} – ${pad(b.hour + 1)}`;
     $("bsAdults").textContent = b.adults; $("bsKids").textContent = b.children;
     const rows = [
-      ["Status", b.status === "cancelled" ? "Cancelled" : "Booked"],
+      ["Status", b.status === "cancelled" ? "Cancelled" : b.status === "pending" ? "Paying now (places held 15 minutes)" : "Booked"],
       ["Children's ages", b.child_ages],
       ["Access needs", b.access],
-      ["To pay on arrival", "£" + b.total],
+      b.paid_at ? ["Paid online", "£" + b.total + " by card (SumUp)"] : b.status === "pending" ? ["Payment", "£" + b.total + ", waiting for SumUp"] : ["To pay on arrival", "£" + b.total],
       ["Phone", b.phone && `<a href="tel:${esc(b.phone).replace(/\s+/g, "")}">${esc(b.phone)}</a>`],
       ["Email", b.email && `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>`],
       ["Booked", `${SRC[b.source] || "Online"}, ${when}`],
@@ -339,11 +339,13 @@ import "../styles/site.css";
     ];
     rows.unshift(["Arrived", b.arrived_at ? "✓ " + new Date(b.arrived_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : ""]);
     $("bsRows").innerHTML = (b.notes ? `<div class="ad-note">📝 ${esc(b.notes)}</div>` : "") + rows.filter((r) => r[1]).map((r) => `<div class="ad-line"><span>${r[0]}</span><b>${r[0] === "Phone" || r[0] === "Email" ? r[1] : esc(r[1])}</b></div>`).join("");
-    $("bsActions").innerHTML = b.status === "confirmed"
+    $("bsActions").innerHTML = b.status === "pending"
+      ? `<button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}" data-paid="">Cancel booking</button>`
+      : b.status === "confirmed"
       ? `<button class="btn book ad-small" type="button" data-arrived="${esc(b.id)}" data-v="${b.arrived_at ? "" : "1"}">${b.arrived_at ? "Undo arrived" : "✓ Mark as arrived"}</button>
          <button class="btn ghost ad-small" type="button" data-edit="${esc(b.id)}">Change</button>
          ${b.phone ? `<a class="btn ghost ad-small" href="tel:${esc(b.phone).replace(/\s+/g, "")}">Call</a>` : ""}
-         <button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}">Cancel booking</button>` : "";
+         <button class="btn ghost ad-small" type="button" data-cancel="${esc(b.id)}" data-paid="${b.paid_at ? "£" + b.total : ""}">Cancel booking</button>` : "";
     $("bkSheet").showModal();
   }
 
@@ -414,7 +416,10 @@ import "../styles/site.css";
     const ed = e.target.closest("[data-edit]");
     if (ed) { const bk = data.bookings.find((x) => x.id === ed.dataset.edit); $("bkSheet").close(); $("hourSheet").close(); openAdd(bk.hour, bk); return; }
     const b = e.target.closest("[data-cancel]"); if (!b) return;
-    if (!confirm("Cancel this booking? The places go back on sale. The record is kept.")) return;
+    const paid = b.dataset.paid;
+    if (!confirm(paid
+      ? `Cancel this booking? The places go back on sale. It was paid online (${paid}), so if you're giving a refund, do it in your SumUp app.`
+      : "Cancel this booking? The places go back on sale. The record is kept.")) return;
     try { await api("/api/admin/cancel", { id: b.dataset.cancel }); } catch (err) { $("err").textContent = err.message; }
     $("bkSheet").close(); load();
   });

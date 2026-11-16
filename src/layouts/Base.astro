@@ -4,7 +4,22 @@ import TopBar from "../components/TopBar.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BookingDialog from "../components/BookingDialog.astro";
-import { settings, hours, catWord, bookingOn, payOnArrival } from "../lib/content";
+import { settings, hours, catWord, bookingOn, payOnArrival, photos, facebookUrl } from "../lib/content";
+
+// Details Google can read (opening hours, address, phone) for search results.
+const dayCode: Record<string, string> = { Monday: "Mo", Tuesday: "Tu", Wednesday: "We", Thursday: "Th", Friday: "Fr", Saturday: "Sa", Sunday: "Su" };
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  name: "The Purr-fect Coffee Shop",
+  description: "Cat café in Skegness",
+  telephone: settings.phone,
+  url: Astro.site?.toString(),
+  image: new URL("/uploads/site/logo.jpg", Astro.site).toString(),
+  address: { "@type": "PostalAddress", streetAddress: "18 High Street", addressLocality: "Skegness", postalCode: "PE25 3NW", addressCountry: "GB" },
+  openingHours: (hours.days ?? []).filter((d: any) => !d.closed).map((d: any) => `${dayCode[d.day]} ${d.open}-${d.close}`),
+  sameAs: facebookUrl ? [facebookUrl] : [],
+};
 
 interface Props {
   title?: string;
@@ -35,6 +50,11 @@ const siteData = {
 <title>{title}</title>
 <meta name="description" content={description}>
 <link rel="icon" href="/uploads/site/logo.jpg">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content={new URL(photos.hero?.[0]?.image || "/uploads/site/logo.jpg", Astro.site).toString()}>
+<meta property="og:type" content="website">
+<script type="application/ld+json" set:html={JSON.stringify(localBusiness)}></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">

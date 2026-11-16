@@ -64,7 +64,7 @@ export async function availability(db, date) {
   const rule = dayRule(date);
   if (!rule.open) return { date, open: false, price: rule.price, roomCap: rule.cap, slots: [] };
   const [b, o] = await db.batch([
-    db.prepare("SELECT hour, SUM(adults + children) AS guests, SUM(children) AS kids FROM bookings WHERE date = ? AND status = 'confirmed' GROUP BY hour").bind(date),
+    db.prepare(`SELECT hour, SUM(adults + children) AS guests, SUM(children) AS kids FROM bookings WHERE date = ? AND ${ACTIVE} GROUP BY hour`).bind(date),
     db.prepare("SELECT hour, max_guests FROM slot_overrides WHERE date = ?").bind(date),
   ]);
   const booked = Object.fromEntries(b.results.map((r) => [r.hour, r]));
@@ -88,6 +88,12 @@ export async function availability(db, date) {
   });
   return { date, open: slots.some((s) => s.cap > 0), price: rule.price, roomCap: rule.cap, slots };
 }
+
+// Places are taken by confirmed bookings, and by online bookings still inside their payment hold.
+export const HOLD_MINUTES = 15;
+export const ACTIVE = "(status = 'confirmed' OR (status = 'pending' AND hold_until > strftime('%Y-%m-%dT%H:%M:%fZ', 'now')))";
+// Whether online payment is switched on in the editor (Café details > Booking rules > How people pay).
+export const payOnlineChosen = settings.rules?.payment === "Pay online when booking";
 
 export const pad = (h) => String(h).padStart(2, "0") + ":00";
 export const people = (a, c) => `${a} adult${a === 1 ? "" : "s"}${c ? `, ${c} child${c === 1 ? "" : "ren"}` : ""}`;

@@ -21,7 +21,11 @@ CREATE TABLE IF NOT EXISTS bookings (
   reminder_sent INTEGER NOT NULL DEFAULT 0,
   source TEXT NOT NULL DEFAULT 'online',     -- online | phone | walk-in | other
   arrived_at TEXT,
-  notes TEXT
+  notes TEXT,
+  hold_until TEXT,                     -- online payment: places held until this time
+  checkout_id TEXT,                    -- SumUp checkout
+  pay_url TEXT,
+  paid_at TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_slot ON bookings (date, hour, status);
 

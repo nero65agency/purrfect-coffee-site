@@ -29,14 +29,14 @@ import { settings, todo, telHref, bookingOn, payOnArrival } from "../lib/content
       <fieldset><legend>Your details</legend><div class="form"><label>Full name<input type="text" id="bkName" autocomplete="name" required></label><label>Email<input type="email" id="bkEmail" autocomplete="email" required></label><label class="full">Phone<input type="tel" id="bkPhone" autocomplete="tel"></label></div></fieldset>
       <div class="disc"><strong style="font-size:19px">Visitor disclaimer</strong>
         <ul style="margin-top:10px"><li>The cats are live animals and may behave unpredictably. Please treat them with kindness and respect.</li><li>I'm responsible for my own safety and the safety of any children in my care.</li><li>I'll follow staff instructions and the house rules, including not chasing, picking up or handling the cats.</li><li>Cats can scratch, bite or jump, and I accept this is part of visiting a cat café.</li><li>I may be asked to leave if I behave in a way that's unsafe or distresses the cats, guests or staff.</li><li>The café isn't responsible for loss of or damage to personal property.</li><li>The cats roam freely. Air purifiers help, but allergens are still present.</li></ul>
-        <label class="chk" style="font-weight:700"><input type="checkbox" id="agree">I agree to the disclaimer and house rules for everyone in my booking</label>
+        <label class="chk" style="font-weight:700"><input type="checkbox" id="agree">I agree to the <a href="/disclaimer" target="_blank" style="text-decoration:underline">visitor disclaimer</a> and <a href="/booking-terms" target="_blank" style="text-decoration:underline">house rules</a> for everyone in my booking</label>
       </div>
     </div>
     <aside class="sum">
       <strong style="font-family:var(--serif);font-size:28px;font-weight:600">Your visit</strong>
       <dl><dt>Day</dt><dd id="sDay"></dd><dt>Time</dt><dd id="sTime"></dd><dt>Guests</dt><dd id="sGuests"></dd><dt>Access</dt><dd id="sAccess">None</dd></dl>
       <div class="tot"><span>Entry <small style="color:var(--soft)" id="sCalc"></small></span><b id="sTotal"></b></div>
-      <p style="margin:0;padding:12px 14px;border-radius:14px;background:var(--cream);font-size:14px">{payOnArrival ? "Pay when you arrive, by cash or card. Can't make it? Please call us so we can offer your place to someone else." : "All payments are non-refundable."} {todo(settings.rules?.rescheduling, "Rescheduling policy to confirm.")}</p>
+      <p style="margin:0;padding:12px 14px;border-radius:14px;background:var(--cream);font-size:14px">{payOnArrival ? "Pay when you arrive, by cash or card. Can't make it? Please call us so we can offer your place to someone else." : "You'll pay by card on SumUp's secure page. All payments are non-refundable."} {todo(settings.rules?.rescheduling, "Rescheduling policy to confirm.")}</p>
       <button class="btn book" type="button" id="pay" disabled>Book my visit</button>
       <small style="text-align:center;color:var(--soft)" id="hint">Choose a time to continue.</small>
       

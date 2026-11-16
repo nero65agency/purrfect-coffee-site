@@ -1,0 +1,79 @@
+---
+// Customers land here after paying on SumUp's page.
+import Page from "../layouts/Page.astro";
+import { settings, telHref } from "../lib/content";
+---
+<Page title="Your booking">
+  <div id="bk" aria-live="polite">
+    <p id="bkMsg">Checking your payment…</p>
+    <div id="bkInfo" hidden style="background:var(--cream);border-radius:22px;padding:20px 22px;margin:18px 0"></div>
+    <div id="bkActions" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px"></div>
+    <p id="bkHelp" hidden style="color:var(--soft)">
+      Any problems? Call us on <a href={telHref(settings.phone)}>{settings.phone}</a>.
+    </p>
+  </div>
+</Page>
+
+<script>
+  const $ = (id: string) => document.getElementById(id)!;
+  const pad = (h: number) => String(h).padStart(2, "0") + ":00";
+  const ref = (new URLSearchParams(location.search).get("ref") || "").toUpperCase();
+  const people = (a: number, c: number) => `${a} adult${a === 1 ? "" : "s"}${c ? `, ${c} child${c === 1 ? "" : "ren"}` : ""}`;
+  const when = (s: any) =>
+    new Date(s.date + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + `, ${pad(s.hour)} – ${pad(s.hour + 1)}`;
+
+  function show(msg: string, info = "", actions = "", help = true) {
+    $("bkMsg").innerHTML = msg;
+    $("bkInfo").hidden = !info;
+    $("bkInfo").innerHTML = info;
+    $("bkActions").innerHTML = actions;
+    $("bkHelp").hidden = !help;
+  }
+
+  async function check(tries = 0): Promise<void> {
+    let s: any;
+    try {
+      const r = await fetch("/api/booking-status?ref=" + encodeURIComponent(ref), { cache: "no-store" });
+      s = await r.json();
+    } catch {
+      s = { status: "error" };
+    }
+
+    if (s.status === "confirmed") {
+      document.querySelector("main h1")!.textContent = "You're booked in";
+      return show(
+        "Thank you, your payment has gone through. The cats can't wait to meet you.",
+        `<p style="margin:0 0 6px"><b>${when(s)}</b></p>
+         <p style="margin:0 0 6px">${people(s.adults, s.children)}${s.paid ? ` · £${s.total} paid` : ` · £${s.total} to pay when you arrive`}</p>
+         <p style="margin:0">Booking reference: <b>${s.ref}</b></p>`,
+        `<a class="btn book" href="/">Back to the café</a>`
+      );
+    }
+    if (s.status === "pending" && tries < 8) {
+      show("Checking your payment…", "", "", false);
+      setTimeout(() => check(tries + 1), 2500);
+      return;
+    }
+    if (s.status === "pending") {
+      const until = s.holdUntil ? new Date(s.holdUntil).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "";
+      return show(
+        "We haven't received your payment yet. If you've just paid, refresh this page in a minute." +
+          (until ? ` Your places are held until <b>${until}</b>.` : ""),
+        "",
+        `${s.payUrl ? `<a class="btn book" href="${s.payUrl}">Go back to payment</a>` : ""}<button class="btn ghost" type="button" onclick="location.reload()">Refresh</button>`
+      );
+    }
+    if (s.status === "failed" || s.status === "expired") {
+      return show(
+        "Your payment didn't go through, so the booking wasn't made and your places have been released. You haven't been charged.",
+        "",
+        `<a class="btn book" href="/">Try booking again</a>`
+      );
+    }
+    if (s.status === "cancelled") return show("This booking has been cancelled.", "", `<a class="btn book" href="/">Back to the café</a>`);
+    show("We couldn't find that booking.", "", `<a class="btn book" href="/">Back to the café</a>`);
+  }
+
+  if (ref) check();
+  else show("We couldn't find that booking.", "", `<a class="btn book" href="/">Back to the café</a>`);
+</script>
