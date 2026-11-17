@@ -18,7 +18,7 @@
     "onlineBooking": true,
     "payment": "Pay online when booking",
     "minAge": 5,
-    "rescheduling": ""
+    "rescheduling": "This includes changes of plan, illness, late arrival or any other reason. If we ever have to cancel your visit, we'll offer you a new time or a full refund."
   },
   "parking": "",
   "access": "",

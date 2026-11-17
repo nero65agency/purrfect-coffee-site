@@ -16,7 +16,11 @@ Depending on the day, you'll either pay online when you book (by card, through S
 
 ## Changing your booking
 
-[Rescheduling policy to confirm.]
+We operate a strict no refund policy on all bookings and entry fees. All payments are non-refundable, including in the event of a change of plans, illness, late arrival or any other reason.
+
+If you arrive late, your visit still ends at your booked time.
+
+If we ever have to cancel your visit, we'll offer you a new time or a full refund.
 
 If you can't make it, please call us on 07714 622333 so we can offer your place to someone else.
 
