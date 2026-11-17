@@ -2,8 +2,6 @@
 title: Visitor disclaimer
 ---
 
-[Draft. Louise's own disclaimer wording, checked by her insurer, should replace this text.]
-
 By booking or visiting The Purr-fect Coffee Shop, you agree, for yourself and everyone in your group, that:
 
 - Our cats are animals and can scratch or bite, even when they're gentle. You take part in contact with the cats at your own risk.

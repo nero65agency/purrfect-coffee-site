@@ -11,7 +11,7 @@ const maps = "https://www.google.com/maps/search/?api=1&query=" + encodeURICompo
       <table><thead><tr><th scope="col">Day</th><th scope="col">Open</th><th scope="col">Last booking</th></tr></thead><tbody id="hours"></tbody></table>
       <p style="margin:0;font-size:18px">{settings.address}</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn book" data-book type="button">Book a visit</button><a class="btn ghost" href={maps} target="_blank" rel="noopener">Get directions</a><a class="btn ghost" href={telHref(settings.phone)}>Call</a></div>
-      <p style="margin:0;font-size:15px;color:var(--soft)"><strong style="color:var(--ink)">Parking:</strong> {todo(settings.parking, "nearest car park")} <strong style="color:var(--ink)">Access:</strong> {todo(settings.access, "step-free entrance, accessible toilet")}</p>
+      {(settings.parking || settings.access) && <p style="margin:0;font-size:15px;color:var(--soft)">{settings.parking && <><strong style="color:var(--ink)">Parking:</strong> {settings.parking} </>}{settings.access && <><strong style="color:var(--ink)">Access:</strong> {settings.access}</>}</p>}
     </div>
     <div class="mapbox" id="mapbox">
       <div class="mapcover">

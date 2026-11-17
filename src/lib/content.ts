@@ -44,7 +44,7 @@ export const menu = menuSections.map((name) => ({
 
 // Shows a bracketed reminder while something is still to come from Louise.
 // Once everything is filled in, set SHOW_GAPS to false so empty fields simply disappear.
-export const SHOW_GAPS = true;
+export const SHOW_GAPS = false;
 export const todo = (value: unknown, reminder: string) =>
   value !== undefined && value !== null && String(value).trim() !== "" ? String(value) : SHOW_GAPS ? `[${reminder}]` : "";
 
