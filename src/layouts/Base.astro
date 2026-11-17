@@ -44,8 +44,7 @@ const siteData = {
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="only light">
-<!-- Remove this line at launch so Google can find the site -->
-<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()}>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content={description}>

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /bookings
+Disallow: /booking-confirmed
+Disallow: /api/
+
+Sitemap: https://thepurrfectcoffee.co.uk/sitemap.xml
