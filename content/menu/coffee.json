@@ -2,6 +2,6 @@
   "itemName": "Coffee",
   "category": "Drinks",
   "price": "£3",
-  "description": "Americano, latte, cappuccino and mocha.",
+  "description": "Americano, latte, cappuccino and mocha.\nYou can Add a caramel or vanilla shot 50p extra.",
   "order": 1
 }
