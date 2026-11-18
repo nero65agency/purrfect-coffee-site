@@ -1,7 +1,7 @@
 {
-  "itemName": "Iced coffee and cold drinks",
+  "itemName": "cold drinks",
   "category": "Drinks",
-  "price": "£3.50",
-  "description": "Ask for today's choices.",
+  "price": "£1",
+  "description": "Cans of pop.\nCoke, Pepsi max, Fanta, lemonade, fruit shoots (orange and blackcurrant)\nBottled water £1.30\nJ20 Orange £2",
   "order": 4
 }
