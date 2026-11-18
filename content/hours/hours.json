@@ -44,8 +44,8 @@
       "day": "Saturday",
       "closed": false,
       "open": "10:00",
-      "close": "18:00",
-      "lastBooking": "17:00",
+      "close": "17:00",
+      "lastBooking": "16:00",
       "special": ""
     },
     {
