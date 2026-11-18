@@ -55,7 +55,8 @@
       "close": "16:00",
       "lastBooking": "15:00",
       "special": ""
-    }
+    },
+    {}
   ],
   "note": "Close at 2pm-3pm everyday for a cat nap"
 }
