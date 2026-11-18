@@ -1,9 +1,9 @@
 {
   "title": "Cat afternoon tea",
   "when": "Bookings only",
-  "description": "Sweet and savoury selection for two, with free entry. £30 for 2 people.",
+  "description": "Sweet and savoury selection for two, with free entry. £30 for 2 people.\nBookings only.",
   "image": "/uploads/events/aftertea.jpg",
-  "bookable": false,
+  "bookable": true,
   "hidden": true,
   "order": 4
 }
