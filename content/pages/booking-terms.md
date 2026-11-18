@@ -20,15 +20,15 @@ We operate a strict no refund policy on all bookings and entry fees. All payment
 
 If you arrive late, your visit still ends at your booked time.
 
-If we ever have to cancel your visit, we'll offer you a new time or a full refund.
+If we ever have to cancel your visit, we'll offer you a new time or day.
 
 If you can't make it, please call us on 07714 622333 so we can offer your place to someone else.
 
 ## House rules
 
-- Let sleeping cats lie, and let the cats come to you.
-- Please sanitise your hands when you arrive.
-- Please don't feed the cats human food.
-- Everyone visiting is asked to agree to our disclaimer.
+* Let sleeping cats lie, and let the cats come to you.
+* Please sanitise your hands when you arrive.
+* Please don't feed the cats human food.
+* Everyone visiting is asked to agree to our disclaimer.
 
 These rules are there to keep our cats happy and everyone safe. We may ask anyone who doesn't follow them to leave.
