@@ -2,6 +2,12 @@
   "itemName": "Cake",
   "category": "Cakes and treats",
   "price": "£3",
-  "description": "Sponge cakes and homemade bakes.",
+  "description": "Sponge cakes.\nTray bakes.",
+  "options": [
+    "Chocolate",
+    "Vanilla",
+    "Victoria sponge",
+    "Lemon"
+  ],
   "order": 1
 }
