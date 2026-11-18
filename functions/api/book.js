@@ -3,10 +3,11 @@
 import { dayRule, isPast, londonNow, addDays, isDate, makeRef, json, rules, pad, people, NAMES, weekday,
   ACTIVE, HOLD_MINUTES, payOnlineChosen, DAYS_AHEAD, DISCLAIMER_VERSION } from "../../lib-api/booking.js";
 import { sumupReady, createCheckout } from "../../lib-api/sumup.js";
+import { bookingEmails } from "../../lib-api/email.js";
 
 const clean = (v, max) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, max);
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   if (!env.DB) return json({ error: "Booking database isn't connected yet." }, 503);
   let b;
   try { b = await request.json(); } catch { return json({ error: "Something went wrong. Please try again." }, 400); }
@@ -67,6 +68,8 @@ export async function onRequestPost({ request, env }) {
       return json({ error: "Sorry, online payment isn't working right now. Please call us to book." }, 502);
     }
   }
-  // Louise will get an email for each booking once her domain and email are set up.
+  // Pay on arrival: confirmed now, so send the emails (in the background, so the customer isn't kept waiting).
+  const emails = bookingEmails(env, ref, new URL(request.url).origin);
+  if (waitUntil) waitUntil(emails); else await emails;
   return json({ ok: true, ref, date, hour, adults, children, total, payOnArrival: true });
 }

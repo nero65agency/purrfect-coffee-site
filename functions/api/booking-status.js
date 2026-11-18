@@ -11,7 +11,7 @@ export async function onRequestGet({ request, env }) {
 
   let status = row.status;
   if (status === "pending") {
-    status = await syncPayment(env, row);
+    status = await syncPayment(env, row, new URL(request.url).origin);
     if (status === "pending" && row.hold_until && row.hold_until <= new Date().toISOString()) status = "expired";
   }
   return json({

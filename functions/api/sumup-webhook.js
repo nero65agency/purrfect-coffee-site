@@ -7,7 +7,7 @@ export async function onRequestPost({ request, env }) {
   const id = body?.id || body?.payload?.id || body?.checkout_id;
   if (id && env.DB) {
     const row = await env.DB.prepare("SELECT * FROM bookings WHERE checkout_id = ?").bind(String(id)).first();
-    if (row) await syncPayment(env, row);
+    if (row) await syncPayment(env, row, new URL(request.url).origin);
   }
   return new Response(null, { status: 204 });
 }

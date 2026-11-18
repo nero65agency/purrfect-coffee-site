@@ -1,3 +1,5 @@
+import { bookingEmails } from "./email.js";
+
 // SumUp online payments (Louise's own SumUp account).
 // Needs two settings in Cloudflare: SUMUP_API_KEY (Secret) and SUMUP_MERCHANT_CODE (Text).
 const API = "https://api.sumup.com/v0.1";
@@ -41,7 +43,7 @@ export const getCheckout = (env, id) => call(env, `/checkouts/${encodeURICompone
 
 // Asks SumUp whether a booking waiting for payment has been paid, and confirms it if so.
 // Never trusts the browser or the notification on its own: the answer always comes from SumUp.
-export async function syncPayment(env, row) {
+export async function syncPayment(env, row, siteUrl = "") {
   if (!row || row.status !== "pending" || !row.checkout_id || !sumupReady(env)) return row?.status ?? "missing";
   let c;
   try { c = await getCheckout(env, row.checkout_id); } catch (e) { console.log("SumUp check failed", e.message); return "pending"; }
@@ -53,11 +55,13 @@ export async function syncPayment(env, row) {
     }
     const now = new Date().toISOString();
     const late = row.hold_until && row.hold_until < now;
-    await env.DB.prepare(
+    const res = await env.DB.prepare(
       `UPDATE bookings SET status = 'confirmed', paid_at = ?1,
          notes = CASE WHEN ?2 = 1 THEN TRIM(COALESCE(notes, '') || ' Paid after the 15-minute hold ran out, so check this hour isn''t over the limit.') ELSE notes END
        WHERE id = ?3 AND status = 'pending'`
     ).bind(now, late ? 1 : 0, row.id).run();
+    // Only the check that actually confirmed it sends the emails, so they go out once.
+    if (res.meta?.changes === 1) await bookingEmails(env, row.id, siteUrl);
     return "confirmed";
   }
   if (c.status === "FAILED" || c.status === "EXPIRED") return "failed";
