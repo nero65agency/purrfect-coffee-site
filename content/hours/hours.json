@@ -20,8 +20,8 @@
       "day": "Wednesday",
       "closed": false,
       "open": "10:00",
-      "close": "17:00",
-      "lastBooking": "16:00",
+      "close": "16:00",
+      "lastBooking": "15:00",
       "special": ""
     },
     {
