@@ -1,15 +1,12 @@
 {
   "phone": "07714 622333",
-  "email": "",
+  "email": "Louiseelvin89@icloud.com",
   "address": "18 High Street, Skegness, PE25 3NW",
   "facebookUrl": "https://www.facebook.com/p/The-Purr-Fect-coffee-shop-61589057881060/",
   "googleReviewUrl": "",
-  "topBar": [
-    "Takeaway hatch: drinks and food, £3.50 each"
-  ],
   "entry": {
     "weekday": "£5",
-    "saturday": "£7",
+    "saturday": "£5",
     "sunday": "£6"
   },
   "rules": {
