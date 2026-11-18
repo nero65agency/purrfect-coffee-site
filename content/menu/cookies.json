@@ -1,7 +1,7 @@
 {
-  "itemName": "Cookies and snacks",
+  "itemName": "Snacks",
   "category": "Cakes and treats",
-  "price": "",
-  "description": "Ask at the counter.",
+  "price": "£1",
+  "description": "Ask at the counter.\nWe usually stock chocolate bars and different flavoured crisps.",
   "order": 3
 }
